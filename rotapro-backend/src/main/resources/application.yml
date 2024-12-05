@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: rotapro-backend
+  profiles:
+    active: test
+  jpa:
+    open-in-view: false

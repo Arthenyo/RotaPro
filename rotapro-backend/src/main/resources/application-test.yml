@@ -1,0 +1,32 @@
+spring:
+  jpa:
+    properties:
+      jakarta:
+        persistence:
+          schema-generation:
+            create-source: metadata
+            scripts:
+              action: create
+              create-target: create.sql
+      hibernate:
+        hbm2ddl:
+          delimiter: ";"
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+postgresql:
+  datasource:
+    jdbcUrl: ${POSTGRES_JDBC_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: ${POSTGRES_DRIVER_CLASS_NAME}
+
+# Oracle Database configuration
+oracle:
+  datasource:
+    jdbcUrl: ${ORACLE_JDBC_URL}
+    username: ${ORACLE_USERNAME}
+    password: ${ORACLE_PASSWORD}
+    driver-class-name: ${ORACLE_DRIVER_CLASS_NAME}
