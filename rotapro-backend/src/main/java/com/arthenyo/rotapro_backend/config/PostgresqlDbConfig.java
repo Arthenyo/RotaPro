@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "com.arthenyo.rotapro.repository.postgresql",
+        basePackages = "com.arthenyo.rotapro_backend.repositories.repository_postgresql",
         entityManagerFactoryRef = "postgresqlEntityManager"
 )
 @ConditionalOnProperty(name = "postgresql.datasource.jdbc-url")
@@ -36,7 +36,7 @@ public class PostgresqlDbConfig {
             @Qualifier("postgresqlDataSource") DataSource dataSource) {
         return builder
                 .dataSource(dataSource)
-                .packages("com.arthenyo.rotapro.model.postgresql")
+                .packages("com.arthenyo.rotapro_backend.model.model_postgresql")
                 .build();
     }
     @Bean(name = "transactionManager")

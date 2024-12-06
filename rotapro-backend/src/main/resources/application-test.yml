@@ -7,12 +7,12 @@ spring:
             create-source: metadata
             scripts:
               action: create
-              create-target: create.sql
+              create-target: ./target/create.sql # Define o local onde o arquivo será gerado
       hibernate:
         hbm2ddl:
-          delimiter: ";"
+          delimiter: ";" # Define o delimitador para os comandos SQL
     hibernate:
-      ddl-auto: update
+      ddl-auto: create # Garante que o esquema seja recriado a cada inicialização
       dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
 
@@ -23,7 +23,6 @@ postgresql:
     password: ${POSTGRES_PASSWORD}
     driver-class-name: ${POSTGRES_DRIVER_CLASS_NAME}
 
-# Oracle Database configuration
 oracle:
   datasource:
     jdbcUrl: ${ORACLE_JDBC_URL}

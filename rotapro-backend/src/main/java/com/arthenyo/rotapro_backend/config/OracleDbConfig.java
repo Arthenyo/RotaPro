@@ -16,7 +16,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "com.arthenyo.rotapro.repository.oracle",
+        basePackages = "com.arthenyo.rotapro_backend.repositories.repository_oracle",
         entityManagerFactoryRef = "oracleEntityManagerFactory",
         transactionManagerRef = "transactionManagerOracle"
 )
@@ -36,7 +36,7 @@ public class OracleDbConfig {
     ) {
         return builder
                 .dataSource(dataSource)
-                .packages("com.arthenyo.rotapro.model.oracle")
+                .packages("com.arthenyo.rotapro_backend.model.model_oracle")
                 .persistenceUnit("oracle")
                 .build();
     }
