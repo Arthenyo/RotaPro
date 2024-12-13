@@ -2,6 +2,7 @@ package com.arthenyo.rotapro_backend.services;
 
 import com.arthenyo.rotapro_backend.model.model_oracle.DriverOracle;
 import com.arthenyo.rotapro_backend.model.model_postgresql.DriverPostgresql;
+import com.arthenyo.rotapro_backend.model.model_postgresql.enums.Availabilities;
 import com.arthenyo.rotapro_backend.repositories.repository_oracle.DriverOracleRepository;
 import com.arthenyo.rotapro_backend.repositories.repository_postgresql.DriverPostgresqlRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,8 @@ public class DriverService {
                 driver.setCnh(driverOracle.getCnh());
                 driver.setCategoryCNH(driverOracle.getCategoryCNH());
                 driver.setValidityCNH(driverOracle.getValidityCNH());
+                driver.setStatus(Boolean.TRUE);
+                driver.setAvailabilities(Availabilities.AVAILABLE);
                 driverPostgresqlList.add(driver);
             }else {
                 return "No to any new registrations!";

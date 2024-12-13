@@ -1,5 +1,6 @@
 package com.arthenyo.rotapro_backend.model.model_postgresql;
 
+import com.arthenyo.rotapro_backend.model.model_postgresql.enums.Availabilities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -20,17 +21,23 @@ public class DriverPostgresql {
     private String categoryCNH;
     @Column(name = "VAlidadeCNH")
     private LocalDateTime validityCNH;
+    private Boolean status;
+    @Column(name = "Disponibilidades")
+    @Enumerated(EnumType.STRING)
+    private Availabilities availabilities;
 
     public DriverPostgresql() {
     }
 
-    public DriverPostgresql(Long id, Integer registration, String name, String cnh, String categoryCNH, LocalDateTime validityCNH) {
+    public DriverPostgresql(Long id, Integer registration, String name, String cnh, String categoryCNH, LocalDateTime validityCNH, Boolean status, Availabilities availabilities) {
         this.id = id;
         this.registration = registration;
         this.name = name;
         this.cnh = cnh;
         this.categoryCNH = categoryCNH;
         this.validityCNH = validityCNH;
+        this.status = status;
+        this.availabilities = availabilities;
     }
 
     public Long getId() {
@@ -79,6 +86,22 @@ public class DriverPostgresql {
 
     public void setValidityCNH(LocalDateTime validityCNH) {
         this.validityCNH = validityCNH;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public Availabilities getAvailabilities() {
+        return availabilities;
+    }
+
+    public void setAvailabilities(Availabilities availabilities) {
+        this.availabilities = availabilities;
     }
 
     @Override
