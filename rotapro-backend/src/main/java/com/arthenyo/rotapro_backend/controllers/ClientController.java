@@ -1,7 +1,7 @@
 package com.arthenyo.rotapro_backend.controllers;
 
+import com.arthenyo.rotapro_backend.services.ClientService;
 import com.arthenyo.rotapro_backend.services.DriverService;
-import com.arthenyo.rotapro_backend.services.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/vehicle")
-public class VehicleController {
+@RequestMapping("/client")
+public class ClientController {
 
     @Autowired
-    private VehicleService vehicleService;
+    private ClientService clientService;
 
     @PostMapping
-    public ResponseEntity<String> createDriver(){
-        return ResponseEntity.ok(vehicleService.syncVehicles());
+    public ResponseEntity<String> createClient(){
+        return ResponseEntity.ok(clientService.syncClients());
     }
 }

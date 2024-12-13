@@ -17,6 +17,6 @@ public class DriverController {
 
     @PostMapping
     public ResponseEntity<String> createDriver(){
-        return ResponseEntity.ok(driverService.createDriver());
+        return ResponseEntity.ok(driverService.syncDrivers());
     }
 }
