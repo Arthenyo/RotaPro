@@ -23,15 +23,15 @@ public class RouteOracle {
     @Column(name = "DTSAIDA")
     private LocalDate dtSaida;
     @Column(name = "CODMOTORISTA")
-    private Long codMotorista;
+    private Integer codMotorista;
     @Column(name = "CODVEICULO")
-    private Long codVeiculo;
+    private Integer codVeiculo;
     @Column(name = "TOTALPESO")
     private Double totalPeso;
 
-    public List<Long> getCodCliAsList() {
+    public List<Integer> getCodCliAsList() {
         return Arrays.stream(codCli.split(","))
-                .map(Long::parseLong)
+                .map(Integer::parseInt)
                 .collect(Collectors.toList());
     }
 
@@ -75,19 +75,19 @@ public class RouteOracle {
         this.dtSaida = dtSaida;
     }
 
-    public Long getCodMotorista() {
+    public Integer getCodMotorista() {
         return codMotorista;
     }
 
-    public void setCodMotorista(Long codMotorista) {
+    public void setCodMotorista(Integer codMotorista) {
         this.codMotorista = codMotorista;
     }
 
-    public Long getCodVeiculo() {
+    public Integer getCodVeiculo() {
         return codVeiculo;
     }
 
-    public void setCodVeiculo(Long codVeiculo) {
+    public void setCodVeiculo(Integer codVeiculo) {
         this.codVeiculo = codVeiculo;
     }
 

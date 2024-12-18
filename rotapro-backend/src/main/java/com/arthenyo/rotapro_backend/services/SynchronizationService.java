@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SynchronizationService {
@@ -243,18 +244,32 @@ public class SynchronizationService {
         for (RouteOracle routeOracle : routesOracle) {
             Optional<RoutePostgresql> existingRouteOptional = routePostgresqlRepository.findByCharge(routeOracle.getNumCar());
 
-            if (existingRouteOptional.isPresent()) {
+            Optional<DriverPostgresql> driver = driverPostgresqlRepository.findByRegistration(routeOracle.getCodMotorista());
+            Optional<VehiclePostgresql> vehicle = vehiclePostgresqlRepository.findByCodVehicle(routeOracle.getCodVeiculo());
 
+            if (driver.isEmpty() || vehicle.isEmpty()) {
+                continue;
+            }
+
+            List<Integer> clientIds = routeOracle.getCodCliAsList();
+            List<ClientPostgresql> clientEntities = clientIds.stream()
+                    .map(clientPostgresqlRepository::findByCodClient)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList());
+
+            if (clientEntities.isEmpty()) {
+                continue;
+            }
+
+            if (existingRouteOptional.isPresent()) {
                 RoutePostgresql existingRoute = existingRouteOptional.get();
                 boolean isUpdated = false;
 
-                Optional<DriverPostgresql> driver = driverPostgresqlRepository.findById(routeOracle.getCodMotorista());
-                driver.ifPresent(existingRoute::setDriver);
+                existingRoute.setDriver(driver.get());
+                existingRoute.setVehicle(vehicle.get());
 
-                Optional<VehiclePostgresql> vehicle = vehiclePostgresqlRepository.findById(routeOracle.getCodVeiculo());
-                vehicle.ifPresent(existingRoute::setVehicle);
-
-                if(!existingRoute.getCharge().equals(routeOracle.getNumCar())){
+                if (!existingRoute.getCharge().equals(routeOracle.getNumCar())) {
                     existingRoute.setCharge(routeOracle.getNumCar());
                     isUpdated = true;
                 }
@@ -262,17 +277,14 @@ public class SynchronizationService {
                     existingRoute.setNumMdfe(routeOracle.getNumMdfe());
                     isUpdated = true;
                 }
-
                 if (!existingRoute.getSituacaoMdfe().equals(routeOracle.getSituacaoMdfe())) {
                     existingRoute.setSituacaoMdfe(routeOracle.getSituacaoMdfe());
                     isUpdated = true;
                 }
-
                 if (!existingRoute.getTotalWeight().equals(routeOracle.getTotalPeso())) {
                     existingRoute.setTotalWeight(routeOracle.getTotalPeso());
                     isUpdated = true;
                 }
-
                 if (!existingRoute.getStartDate().equals(routeOracle.getDtSaida())) {
                     existingRoute.setStartDate(routeOracle.getDtSaida());
                     isUpdated = true;
@@ -281,8 +293,21 @@ public class SynchronizationService {
                     existingRoute.setEndDate(routeOracle.getDtSaida());
                     isUpdated = true;
                 }
-                if(routeOracle.getSituacaoMdfe() == 102){
+                if (routeOracle.getSituacaoMdfe() == 102) {
                     existingRoute.setStatus(StatusRouter.CONCLUIDA);
+                    isUpdated = true;
+                }
+
+                List<Long> existingClientIds = existingRoute.getClients().stream()
+                        .map(ClientPostgresql::getId)
+                        .collect(Collectors.toList());
+                List<Long> newClientIds = clientEntities.stream()
+                        .map(ClientPostgresql::getId)
+                        .collect(Collectors.toList());
+
+                if (!existingClientIds.containsAll(newClientIds) || !newClientIds.containsAll(existingClientIds)) {
+                    existingRoute.setClients(clientEntities);
+                    isUpdated = true;
                 }
 
                 if (isUpdated) {
@@ -295,16 +320,12 @@ public class SynchronizationService {
                 newRoute.setSituacaoMdfe(routeOracle.getSituacaoMdfe());
                 newRoute.setTotalWeight(routeOracle.getTotalPeso());
                 newRoute.setStartDate(routeOracle.getDtSaida());
+                newRoute.setStatus(StatusRouter.EM_ANDAMENTO);
 
-                Optional<DriverPostgresql> driver = driverPostgresqlRepository.findById(routeOracle.getCodMotorista());
-                driver.ifPresent(newRoute::setDriver);
+                newRoute.setDriver(driver.get());
+                newRoute.setVehicle(vehicle.get());
 
-                Optional<VehiclePostgresql> vehicle = vehiclePostgresqlRepository.findById(routeOracle.getCodVeiculo());
-                vehicle.ifPresent(newRoute::setVehicle);
-
-                List<Long> clientIds = routeOracle.getCodCliAsList();
-                List<ClientPostgresql> clients = clientPostgresqlRepository.findAllById(clientIds);
-                newRoute.setClients(clients);
+                newRoute.setClients(clientEntities);
 
                 routesToSave.add(newRoute);
             }
