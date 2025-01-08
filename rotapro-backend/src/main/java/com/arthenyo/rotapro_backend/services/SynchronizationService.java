@@ -66,8 +66,8 @@ public class SynchronizationService {
                     isUpdated = true;
                 }
 
-                if (!existingVehicle.getDescricao().equals(vehicleOracle.getDescricao())) {
-                    existingVehicle.setDescricao(vehicleOracle.getDescricao());
+                if (!existingVehicle.getDescription().equals(vehicleOracle.getDescription())) {
+                    existingVehicle.setDescription(vehicleOracle.getDescription());
                     isUpdated = true;
                 }
 
@@ -76,8 +76,8 @@ public class SynchronizationService {
                     isUpdated = true;
                 }
 
-                if (!existingVehicle.getTypeVehicle().equals(vehicleOracle.getTypeVehicle())) {
-                    existingVehicle.setTypeVehicle(vehicleOracle.getTypeVehicle());
+                if (!existingVehicle.getTypeVehicle().equals(vehicleOracle.getTypeWheeled())) {
+                    existingVehicle.setTypeVehicle(vehicleOracle.getTypeWheeled());
                     isUpdated = true;
                 }
 
@@ -85,7 +85,35 @@ public class SynchronizationService {
                     existingVehicle.setColor(vehicleOracle.getColor());
                     isUpdated = true;
                 }
+                if (!existingVehicle.getLoadWeightKg().equals(vehicleOracle.getLoadWeightKg())) {
+                    existingVehicle.setLoadWeightKg(vehicleOracle.getLoadWeightKg());
+                    isUpdated = true;
+                }
 
+                if (!existingVehicle.getQtAxes().equals(vehicleOracle.getQtAxes())) {
+                    existingVehicle.setQtAxes(vehicleOracle.getQtAxes());
+                    isUpdated = true;
+                }
+
+                if (!existingVehicle.getQntWheels().equals(vehicleOracle.getQntWheels())) {
+                    existingVehicle.setQntWheels(vehicleOracle.getQntWheels());
+                    isUpdated = true;
+                }
+
+                if (!existingVehicle.getQntLiters().equals(vehicleOracle.getQntLiters())) {
+                    existingVehicle.setQntLiters(vehicleOracle.getQntLiters());
+                    isUpdated = true;
+                }
+
+                if (!existingVehicle.getFuel().equals(vehicleOracle.getFuel())) {
+                    existingVehicle.setFuel(vehicleOracle.getFuel());
+                    isUpdated = true;
+                }
+
+                if (!existingVehicle.getOwner().equals(vehicleOracle.getOwner())) {
+                    existingVehicle.setOwner(vehicleOracle.getOwner());
+                    isUpdated = true;
+                }
                 if (isUpdated) {
                     vehiclesToSave.add(existingVehicle);
                 }
@@ -94,14 +122,16 @@ public class SynchronizationService {
                 VehiclePostgresql newVehicle = new VehiclePostgresql();
                 newVehicle.setCodVehicle(vehicleOracle.getCodVehicle());
                 newVehicle.setPlate(vehicleOracle.getPlate());
-                newVehicle.setDescricao(vehicleOracle.getDescricao());
+                newVehicle.setDescription(vehicleOracle.getDescription());
                 newVehicle.setMark(vehicleOracle.getMark());
-                newVehicle.setTypeVehicle(vehicleOracle.getTypeVehicle());
+                newVehicle.setTypeVehicle(vehicleOracle.getTypeWheeled());
                 newVehicle.setColor(vehicleOracle.getColor());
-                newVehicle.setCapacity(null);
-                newVehicle.setQntEixos(0);
-                newVehicle.setQntRodas(0);
-                newVehicle.setQntLitros(0.0);
+                newVehicle.setLoadWeightKg(vehicleOracle.getLoadWeightKg());
+                newVehicle.setQtAxes(vehicleOracle.getQtAxes());
+                newVehicle.setQntWheels(vehicleOracle.getQntWheels());
+                newVehicle.setQntLiters(vehicleOracle.getQntLiters());
+                newVehicle.setFuel(vehicleOracle.getFuel());
+                newVehicle.setOwner(vehicleOracle.getOwner());
                 newVehicle.setStatus(true);
                 newVehicle.setAvailabilities(Availabilities.AVAILABLE);
                 vehiclesToSave.add(newVehicle);

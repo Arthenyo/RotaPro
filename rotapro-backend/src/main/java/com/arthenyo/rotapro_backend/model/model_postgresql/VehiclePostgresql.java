@@ -16,7 +16,7 @@ public class VehiclePostgresql {
     @Column(name = "PLACA")
     private String plate;
     @Column(name = "DESCRICAO")
-    private String descricao;
+    private String description;
     @Column(name = "MARCA")
     private String mark;
     @Column(name = "TIPO_VEICULO")
@@ -24,13 +24,17 @@ public class VehiclePostgresql {
     @Column(name = "COR")
     private String color;
     @Column(name = "PESOCARGAKG")
-    private Double capacity;
+    private Integer loadWeightKg;
     @Column(name = "QTEIXOS")
-    private Integer qntEixos;
+    private Integer qtAxes;
     @Column(name = "QTRODAS")
-    private Integer qntRodas;
+    private Integer qntWheels;
     @Column(name = "QTLITROS")
-    private Double qntLitros;
+    private Double qntLiters;
+    @Column(name = "COMBUSTIVEL")
+    private String fuel;
+    @Column(name = "NOMEPROPRIETARIO")
+    private String owner;
     private Boolean status;
     @Column(name = "Disponibilidades")
     @Enumerated(EnumType.STRING)
@@ -39,18 +43,20 @@ public class VehiclePostgresql {
     public VehiclePostgresql() {
     }
 
-    public VehiclePostgresql(Long id, Integer codVehicle, String plate, String descricao, String mark, String typeVehicle, String color, Double capacity, Integer qntEixos, Integer qntRodas, Double qntLitros, Boolean status, Availabilities availabilities) {
+    public VehiclePostgresql(Long id, Integer codVehicle, String plate, String description, String mark, String typeVehicle, String color, Integer loadWeightKg, Integer qtAxes, Integer qntWheels, Double qntLiters, String fuel, String owner, Boolean status, Availabilities availabilities) {
         this.id = id;
         this.codVehicle = codVehicle;
         this.plate = plate;
-        this.descricao = descricao;
+        this.description = description;
         this.mark = mark;
         this.typeVehicle = typeVehicle;
         this.color = color;
-        this.capacity = capacity;
-        this.qntEixos = qntEixos;
-        this.qntRodas = qntRodas;
-        this.qntLitros = qntLitros;
+        this.loadWeightKg = loadWeightKg;
+        this.qtAxes = qtAxes;
+        this.qntWheels = qntWheels;
+        this.qntLiters = qntLiters;
+        this.fuel = fuel;
+        this.owner = owner;
         this.status = status;
         this.availabilities = availabilities;
     }
@@ -79,12 +85,12 @@ public class VehiclePostgresql {
         this.plate = plate;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getMark() {
@@ -111,36 +117,52 @@ public class VehiclePostgresql {
         this.color = color;
     }
 
-    public Double getCapacity() {
-        return capacity;
+    public Integer getLoadWeightKg() {
+        return loadWeightKg;
     }
 
-    public void setCapacity(Double capacity) {
-        this.capacity = capacity;
+    public void setLoadWeightKg(Integer loadWeightKg) {
+        this.loadWeightKg = loadWeightKg;
     }
 
-    public Integer getQntEixos() {
-        return qntEixos;
+    public Integer getQtAxes() {
+        return qtAxes;
     }
 
-    public void setQntEixos(Integer qntEixos) {
-        this.qntEixos = qntEixos;
+    public void setQtAxes(Integer qtAxes) {
+        this.qtAxes = qtAxes;
     }
 
-    public Integer getQntRodas() {
-        return qntRodas;
+    public Integer getQntWheels() {
+        return qntWheels;
     }
 
-    public void setQntRodas(Integer qntRodas) {
-        this.qntRodas = qntRodas;
+    public void setQntWheels(Integer qntWheels) {
+        this.qntWheels = qntWheels;
     }
 
-    public Double getQntLitros() {
-        return qntLitros;
+    public Double getQntLiters() {
+        return qntLiters;
     }
 
-    public void setQntLitros(Double qntLitros) {
-        this.qntLitros = qntLitros;
+    public void setQntLiters(Double qntLiters) {
+        this.qntLiters = qntLiters;
+    }
+
+    public String getFuel() {
+        return fuel;
+    }
+
+    public void setFuel(String fuel) {
+        this.fuel = fuel;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     public Boolean getStatus() {

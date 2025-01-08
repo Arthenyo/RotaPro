@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface VehiclePostgresqlRepository extends JpaRepository<VehiclePostgresql,Long> {
 
     Optional<VehiclePostgresql> findByCodVehicle(Integer codVehicle);
+    Optional<VehiclePostgresql> findByDescription(String description);
 }

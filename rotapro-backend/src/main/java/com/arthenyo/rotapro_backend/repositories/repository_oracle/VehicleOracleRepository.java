@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface VehicleOracleRepository extends JpaRepository<VehicleOracle,Integer> {
-    @Query(nativeQuery = true, value = "SELECT CODVEICULO, DESCRICAO, PLACA, MARCA, TIPOVEICULO, COR FROM pcveicul")
+    @Query(nativeQuery = true, value = "SELECT CODVEICULO, PLACA, CHASSI, MARCA, DESCRICAO, TIPORODADO, PESOCARGAKG, QTEIXOS, QTRODAS, QTLITROS, COR, COMBUSTIVEL, NOMEPROPRIETARIO FROM pcveicul")
     List<VehicleOracle> getAllVehicles();
 }
