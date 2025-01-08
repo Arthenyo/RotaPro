@@ -1,6 +1,7 @@
 package com.arthenyo.rotapro_backend.services;
 
 import com.arthenyo.rotapro_backend.dto.MaintenanceDTO;
+import com.arthenyo.rotapro_backend.dto.MaintenanceMinDTO;
 import com.arthenyo.rotapro_backend.dto.PartCostDTO;
 import com.arthenyo.rotapro_backend.model.model_postgresql.MaintenancePostgresql;
 import com.arthenyo.rotapro_backend.model.model_postgresql.PartCostPostgresql;
@@ -10,8 +11,11 @@ import com.arthenyo.rotapro_backend.repositories.repository_postgresql.Maintenan
 import com.arthenyo.rotapro_backend.repositories.repository_postgresql.VehiclePostgresqlRepository;
 import com.arthenyo.rotapro_backend.services.exception.ObjectNotFound;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -20,6 +24,39 @@ public class MaintenanceService {
     private MaintenancePostgresqlRepository maintenanceRepository;
     @Autowired
     private VehiclePostgresqlRepository vehiclePostgresqlRepository;
+    public Page<MaintenanceMinDTO> findAll(Pageable pageable){
+        Page<MaintenancePostgresql> maintenancePage = maintenanceRepository.findAll(pageable);
+        return maintenancePage.map(MaintenanceMinDTO::new);
+    }
+
+    public MaintenanceMinDTO findById(Long id){
+        MaintenancePostgresql maintenance = maintenanceRepository.findById(id)
+                .orElseThrow(() -> new ObjectNotFound("ERRO: Manutenção não encontrado" + id));
+        return new MaintenanceMinDTO(maintenance);
+    }
+    public Page<MaintenanceMinDTO> findByVehicleIdMaintenances(Integer vehicle, Pageable pageable){
+        VehiclePostgresql manintenanceVehicle = vehiclePostgresqlRepository.findByCodVehicle(vehicle)
+                .orElseThrow(() -> new ObjectNotFound("ERRO: Veiculo não encontrado, Por favor verifique o cadigo do veiculo"));
+        Page<MaintenancePostgresql> maintenancePage = maintenanceRepository.findByVehicle(manintenanceVehicle, pageable);
+        return maintenancePage.map(MaintenanceMinDTO::new);
+    }
+    public Page<MaintenanceMinDTO> findByNextMaintenanceDate(Pageable pageable) {
+        LocalDate hoje = LocalDate.now();
+        Page<MaintenancePostgresql> pageResult = maintenanceRepository.findAllWithNextMaintenanceDateAfter(hoje, pageable);
+        return pageResult.map(MaintenanceMinDTO::new);
+    }
+    public Page<MaintenanceMinDTO> findByStatusMaintenances(StatusMaintenance status, Pageable pageable) {
+        Page<MaintenancePostgresql> resultPage = maintenanceRepository.findAllByStatus(status, pageable);
+        return resultPage.map(MaintenanceMinDTO::new);
+    }
+    public Page<MaintenanceMinDTO> findByCostAboveMaintenances(Double cost, Pageable pageable) {
+        Page<MaintenancePostgresql> pageResult = maintenanceRepository.findAllByTotalCostGreaterThan(cost, pageable);
+        return pageResult.map(MaintenanceMinDTO::new);
+    }
+    public Page<MaintenanceMinDTO> findByDateRangeMaintenances(LocalDate startDate, LocalDate endDate, Pageable pageable) {
+        Page<MaintenancePostgresql> pageResult = maintenanceRepository.findAllByMaintenanceDateBetween(startDate, endDate, pageable);
+        return pageResult.map(MaintenanceMinDTO::new);
+    }
 
     public MaintenanceDTO createMaintenance(MaintenanceDTO dto){
         MaintenancePostgresql entity = new MaintenancePostgresql();
