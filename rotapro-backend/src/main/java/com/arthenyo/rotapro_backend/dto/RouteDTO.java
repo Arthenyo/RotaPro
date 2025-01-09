@@ -2,6 +2,7 @@ package com.arthenyo.rotapro_backend.dto;
 
 import com.arthenyo.rotapro_backend.model.model_postgresql.ClientPostgresql;
 import com.arthenyo.rotapro_backend.model.model_postgresql.RoutePostgresql;
+import com.arthenyo.rotapro_backend.model.model_postgresql.UserPostgresql;
 import com.arthenyo.rotapro_backend.model.model_postgresql.enums.StatusRouter;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -15,6 +16,7 @@ public class RouteDTO {
     private Integer driver;
     private Integer vehicle;
     private List<Integer> clients = new ArrayList<>();
+    private List<String> helpers = new ArrayList<>();
     private Integer charge;
     private Integer numMdfe;
     private Integer situacaoMdfe;
@@ -47,6 +49,9 @@ public class RouteDTO {
         for (ClientPostgresql client: entity.getClients()){
             clients.add(client.getCodClient());
         }
+        for (UserPostgresql helper: entity.getHelpers()){
+            helpers.add(helper.getName());
+        }
     }
 
     public Long getId() {
@@ -63,6 +68,10 @@ public class RouteDTO {
 
     public List<Integer> getClients() {
         return clients;
+    }
+
+    public List<String> getHelpers() {
+        return helpers;
     }
 
     public Integer getCharge() {

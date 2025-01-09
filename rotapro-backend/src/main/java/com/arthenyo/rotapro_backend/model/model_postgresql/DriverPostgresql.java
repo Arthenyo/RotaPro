@@ -25,11 +25,14 @@ public class DriverPostgresql {
     @Column(name = "Disponibilidades")
     @Enumerated(EnumType.STRING)
     private Availabilities availabilities;
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private UserPostgresql user;
 
     public DriverPostgresql() {
     }
 
-    public DriverPostgresql(Long id, Integer registration, String name, String cnh, String categoryCNH, LocalDateTime validityCNH, Boolean status, Availabilities availabilities) {
+    public DriverPostgresql(Long id, Integer registration, String name, String cnh, String categoryCNH, LocalDateTime validityCNH, Boolean status, Availabilities availabilities, UserPostgresql user) {
         this.id = id;
         this.registration = registration;
         this.name = name;
@@ -38,6 +41,7 @@ public class DriverPostgresql {
         this.validityCNH = validityCNH;
         this.status = status;
         this.availabilities = availabilities;
+        this.user = user;
     }
 
     public Long getId() {
@@ -102,6 +106,14 @@ public class DriverPostgresql {
 
     public void setAvailabilities(Availabilities availabilities) {
         this.availabilities = availabilities;
+    }
+
+    public UserPostgresql getUser() {
+        return user;
+    }
+
+    public void setUser(UserPostgresql user) {
+        this.user = user;
     }
 
     @Override

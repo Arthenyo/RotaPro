@@ -1,28 +1,19 @@
 package com.arthenyo.rotapro_backend.services;
 
-import com.arthenyo.rotapro_backend.model.model_oracle.ClientOracle;
-import com.arthenyo.rotapro_backend.model.model_oracle.DriverOracle;
-import com.arthenyo.rotapro_backend.model.model_oracle.RouteOracle;
-import com.arthenyo.rotapro_backend.model.model_oracle.VehicleOracle;
-import com.arthenyo.rotapro_backend.model.model_postgresql.ClientPostgresql;
-import com.arthenyo.rotapro_backend.model.model_postgresql.DriverPostgresql;
-import com.arthenyo.rotapro_backend.model.model_postgresql.RoutePostgresql;
-import com.arthenyo.rotapro_backend.model.model_postgresql.VehiclePostgresql;
+import com.arthenyo.rotapro_backend.model.model_oracle.*;
+import com.arthenyo.rotapro_backend.model.model_postgresql.*;
 import com.arthenyo.rotapro_backend.model.model_postgresql.enums.Availabilities;
 import com.arthenyo.rotapro_backend.model.model_postgresql.enums.StatusRouter;
-import com.arthenyo.rotapro_backend.repositories.repository_oracle.ClientOracleRepository;
-import com.arthenyo.rotapro_backend.repositories.repository_oracle.DriverOracleRepository;
-import com.arthenyo.rotapro_backend.repositories.repository_oracle.RouteOracleRepository;
-import com.arthenyo.rotapro_backend.repositories.repository_oracle.VehicleOracleRepository;
-import com.arthenyo.rotapro_backend.repositories.repository_postgresql.ClientPostgresqlRepository;
-import com.arthenyo.rotapro_backend.repositories.repository_postgresql.DriverPostgresqlRepository;
-import com.arthenyo.rotapro_backend.repositories.repository_postgresql.RoutePostgresqlRepository;
-import com.arthenyo.rotapro_backend.repositories.repository_postgresql.VehiclePostgresqlRepository;
+import com.arthenyo.rotapro_backend.repositories.repository_oracle.*;
+import com.arthenyo.rotapro_backend.repositories.repository_postgresql.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.Normalizer;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,6 +36,15 @@ public class SynchronizationService {
     private RoutePostgresqlRepository routePostgresqlRepository;
     @Autowired
     private RouteOracleRepository routeOracleRepository;
+    @Autowired
+    private UserPostgresqlRepository userPostgresqlRepository;
+    @Autowired
+    private RolePostgresqlRepository rolePostgresqlRepository;
+    @Autowired
+    private HelperOracleRepository helperOracleRepository;
+    @Autowired
+    private HelperPostgresqlRepository helperPostgresqlRepository;
+
 
     public String syncVehicles() {
         List<VehicleOracle> vehicleOracles = vehicleOracleRepository.getAllVehicles();
@@ -154,37 +154,59 @@ public class SynchronizationService {
 
         List<DriverPostgresql> driversToSave = new ArrayList<>();
 
+        RolePostgresql roleDriver = rolePostgresqlRepository
+                .findByAuthority("ROLE_DRIVER")
+                .orElseThrow(() -> new RuntimeException("ROLE_DRIVER not found in database!"));
+
         for (DriverOracle driverOracle : driverOracleList) {
 
-            Optional<DriverPostgresql> existingDriverOptional = driverPostgresqlRepository.findByRegistration(driverOracle.getRegistration());
+            Optional<DriverPostgresql> existingDriverOptional = driverPostgresqlRepository
+                    .findByRegistration(driverOracle.getRegistration());
 
             if (existingDriverOptional.isPresent()) {
                 DriverPostgresql existingDriver = existingDriverOptional.get();
                 boolean isUpdated = false;
 
-                if (!existingDriver.getName().equals(driverOracle.getName())) {
+                if (!Objects.equals(existingDriver.getName(), driverOracle.getName())) {
                     existingDriver.setName(driverOracle.getName());
                     isUpdated = true;
                 }
 
-                if (!existingDriver.getCnh().equals(driverOracle.getCnh())) {
+                if (!Objects.equals(existingDriver.getCnh(), driverOracle.getCnh())) {
                     existingDriver.setCnh(driverOracle.getCnh());
                     isUpdated = true;
                 }
 
-                if (!existingDriver.getCategoryCNH().equals(driverOracle.getCategoryCNH())) {
+                if (!Objects.equals(existingDriver.getCategoryCNH(), driverOracle.getCategoryCNH())) {
                     existingDriver.setCategoryCNH(driverOracle.getCategoryCNH());
                     isUpdated = true;
                 }
 
-                if (!existingDriver.getValidityCNH().equals(driverOracle.getValidityCNH())) {
+                if (!Objects.equals(existingDriver.getValidityCNH(), driverOracle.getValidityCNH())) {
                     existingDriver.setValidityCNH(driverOracle.getValidityCNH());
+                    isUpdated = true;
+                }
+
+                if (existingDriver.getUser() == null) {
+                    UserPostgresql newUser = new UserPostgresql();
+                    newUser.setName(driverOracle.getName());
+                    newUser.setEmail(geraEmailPeloNome(driverOracle.getName()));
+                    newUser.setPhone("11999999999");
+                    newUser.setBirthDate(LocalDate.now()); // ou outro valor
+                    newUser.setPassword("padrao123");
+
+                    newUser.getRoles().add(roleDriver);
+
+                    userPostgresqlRepository.save(newUser);
+
+                    existingDriver.setUser(newUser);
                     isUpdated = true;
                 }
 
                 if (isUpdated) {
                     driversToSave.add(existingDriver);
                 }
+
             } else {
                 DriverPostgresql newDriver = new DriverPostgresql();
                 newDriver.setRegistration(driverOracle.getRegistration());
@@ -194,16 +216,119 @@ public class SynchronizationService {
                 newDriver.setValidityCNH(driverOracle.getValidityCNH());
                 newDriver.setStatus(Boolean.TRUE);
                 newDriver.setAvailabilities(Availabilities.AVAILABLE);
+
+                UserPostgresql newUser = new UserPostgresql();
+                newUser.setName(driverOracle.getName());
+                newUser.setEmail(geraEmailPeloNome(driverOracle.getName()));
+                newUser.setPhone("11999999999");
+                newUser.setBirthDate(LocalDate.now());
+                newUser.setPassword("padrao123");
+
+                newUser.getRoles().add(roleDriver);
+
+                userPostgresqlRepository.save(newUser);
+
+                newDriver.setUser(newUser);
+
                 driversToSave.add(newDriver);
             }
         }
-
         if (!driversToSave.isEmpty()) {
             driverPostgresqlRepository.saveAll(driversToSave);
             return "Drivers synchronized successfully!";
         }
 
         return "No changes detected for drivers.";
+    }
+    public String syncHelpers(Integer codsetor, Integer codfilial) {
+        List<HelperOracle> helperOracleList = helperOracleRepository.getAllHelper(codsetor, codfilial);
+        if (helperOracleList.isEmpty()) {
+            return "No helpers found in Oracle Database!";
+        }
+
+        RolePostgresql roleHelper = rolePostgresqlRepository
+                .findByAuthority("ROLE_HELPER")
+                .orElseThrow(() -> new RuntimeException("ROLE_HELPER not found in database!"));
+
+        List<HelperPostgresql> helpersToSave = new ArrayList<>();
+
+        for (HelperOracle helperOracle : helperOracleList) {
+            Optional<HelperPostgresql> optionalHelperPostgres =
+                    helperPostgresqlRepository.findByRegistration(helperOracle.getRegistration());
+
+            if (optionalHelperPostgres.isPresent()) {
+                HelperPostgresql existingHelper = optionalHelperPostgres.get();
+                boolean isUpdated = false;
+
+                if (!Objects.equals(existingHelper.getName(), helperOracle.getName())) {
+                    existingHelper.setName(helperOracle.getName());
+                    isUpdated = true;
+                }
+
+                if (!Objects.equals(existingHelper.getSector(), helperOracle.getSector())) {
+                    existingHelper.setSector(helperOracle.getSector());
+                    isUpdated = true;
+                }
+
+                if (!Objects.equals(existingHelper.getEmail(), helperOracle.getEmail())) {
+                    existingHelper.setEmail(helperOracle.getEmail());
+                    isUpdated = true;
+                }
+
+                if (!Objects.equals(existingHelper.getFone(), helperOracle.getFone())) {
+                    existingHelper.setFone(helperOracle.getFone());
+                    isUpdated = true;
+                }
+
+                if (existingHelper.getUser() == null) {
+                    UserPostgresql newUser = new UserPostgresql();
+                    newUser.setName(helperOracle.getName());
+                    newUser.setEmail(helperOracle.getEmail());
+                    newUser.setPhone("11999999999");
+                    newUser.setBirthDate(LocalDate.now());
+                    newUser.setPassword("padrao123");
+                    newUser.getRoles().add(roleHelper);
+
+                    userPostgresqlRepository.save(newUser);
+
+                    existingHelper.setUser(newUser);
+                    isUpdated = true;
+                }
+
+                if (isUpdated) {
+                    helpersToSave.add(existingHelper);
+                }
+
+            } else {
+                HelperPostgresql newHelper = new HelperPostgresql();
+                newHelper.setRegistration(helperOracle.getRegistration());
+                newHelper.setName(helperOracle.getName());
+                newHelper.setSector(helperOracle.getSector());
+                newHelper.setEmail(helperOracle.getEmail());
+                newHelper.setFone(helperOracle.getFone());
+
+                UserPostgresql newUser = new UserPostgresql();
+                newUser.setName(helperOracle.getName());
+                newUser.setEmail(helperOracle.getEmail());
+                newUser.setPhone("11999999999");
+                newUser.setBirthDate(LocalDate.now());
+                newUser.setPassword("padrao123");
+                newUser.getRoles().add(roleHelper);
+
+                userPostgresqlRepository.save(newUser);
+
+                newHelper.setUser(newUser);
+
+                helpersToSave.add(newHelper);
+            }
+        }
+
+        if (!helpersToSave.isEmpty()) {
+            helperPostgresqlRepository.saveAll(helpersToSave);
+            return "Helpers synchronized successfully!";
+        }
+
+        return "No changes detected for helpers.";
     }
 
     public String syncClients() {
@@ -367,6 +492,31 @@ public class SynchronizationService {
         }
 
         return "No changes detected for routes.";
+    }
+    private String geraEmailPeloNome(String name) {
+        if (name == null || name.isEmpty()) {
+            return "nome.invalido@empresa.com";
+        }
+        String nomeSemAcentos = Normalizer
+                .normalize(name, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+
+        nomeSemAcentos = nomeSemAcentos.toLowerCase();
+
+        String[] partes = nomeSemAcentos.split("\\s+");
+        String baseEmail = String.join(".", partes);
+
+        String dominio = "empresa.com";
+
+        String email = baseEmail + "@" + dominio;
+        int contador = 1;
+
+        while (userPostgresqlRepository.existsByEmail(email)) {
+            email = baseEmail + contador + "@" + dominio;
+            contador++;
+        }
+
+        return email;
     }
 
 }

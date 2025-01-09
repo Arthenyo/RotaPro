@@ -25,6 +25,13 @@ public class RoutePostgresql {
             joinColumns = @JoinColumn(name = "rota_id"),
             inverseJoinColumns = @JoinColumn(name = "cliente_id"))
     private List<ClientPostgresql> clients = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(
+            name = "tb_rota_ajudantes",
+            joinColumns = @JoinColumn(name = "rota_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuario_id")
+    )
+    private List<UserPostgresql> helpers = new ArrayList<>();
     @Column(name = "carregamento")
     private Integer charge;
     @Column(name = "mdfe")
@@ -95,6 +102,14 @@ public class RoutePostgresql {
 
     public void setClients(List<ClientPostgresql> clients) {
         this.clients = clients;
+    }
+
+    public List<UserPostgresql> getHelpers() {
+        return helpers;
+    }
+
+    public void setHelpers(List<UserPostgresql> helpers) {
+        this.helpers = helpers;
     }
 
     public Integer getCharge() {

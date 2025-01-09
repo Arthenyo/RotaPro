@@ -1,6 +1,7 @@
 package com.arthenyo.rotapro_backend.controllers;
 
 import com.arthenyo.rotapro_backend.services.SynchronizationService;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,10 @@ public class SynchronizationController {
     @PostMapping("/drivers")
     public ResponseEntity<String> createDriver(){
         return ResponseEntity.ok(synchronizationService.syncDrivers());
+    }
+    @PostMapping("/helpers")
+    public ResponseEntity<String> createHelpers(@PathParam("codsetor") Integer codsetor, @PathParam("codfilial") Integer codfilial){
+        return ResponseEntity.ok(synchronizationService.syncHelpers(codsetor, codfilial));
     }
     @PostMapping("/vehicles")
     public ResponseEntity<String> createVehicle(){
