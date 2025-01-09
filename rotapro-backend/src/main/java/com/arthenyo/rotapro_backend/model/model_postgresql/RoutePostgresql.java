@@ -14,22 +14,34 @@ public class RoutePostgresql {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "motorista_id")
     private DriverPostgresql driver;
-
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "veiculo_id")
     private VehiclePostgresql vehicle;
     @ManyToMany
+    @JoinTable(name = "tb_rota_cliente",
+            joinColumns = @JoinColumn(name = "rota_id"),
+            inverseJoinColumns = @JoinColumn(name = "cliente_id"))
     private List<ClientPostgresql> clients = new ArrayList<>();
+    @Column(name = "carregamento")
     private Integer charge;
+    @Column(name = "mdfe")
     private Integer numMdfe;
+    @Column(name = "situacao_mdfe")
     private Integer situacaoMdfe;
+    @Column(name = "peso")
     private Double totalWeight;
+    @Column(name = "data_inicial")
     private LocalDate startDate;
+    @Column(name = "data_termino")
     private LocalDate endDate;
+    @Column(name = "km_inicial")
     private Integer kminicial;
+    @Column(name = "km_final")
     private Integer kmfinal;
+    @Column(name = "km_total")
     private Integer totalKm;
     @Enumerated(EnumType.STRING)
     private StatusRouter status;
