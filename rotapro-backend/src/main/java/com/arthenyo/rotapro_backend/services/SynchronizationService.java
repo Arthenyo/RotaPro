@@ -44,6 +44,10 @@ public class SynchronizationService {
     private HelperOracleRepository helperOracleRepository;
     @Autowired
     private HelperPostgresqlRepository helperPostgresqlRepository;
+    @Autowired
+    private BranchOracleRepository branchOracleRepository;
+    @Autowired
+    private BranchPostgresqlRepository branchPostgresqlRepository;
 
 
     public String syncVehicles() {
@@ -492,6 +496,54 @@ public class SynchronizationService {
         }
 
         return "No changes detected for routes.";
+    }
+    public String syncBranches() {
+        List<BranchOracle> branchOracleList = branchOracleRepository.getAllBranch();
+        if (branchOracleList.isEmpty()) {
+            return "No branches found in Oracle Database!";
+        }
+
+        List<BranchPostgresql> branchesToSave = new ArrayList<>();
+
+        for (BranchOracle branchOracle : branchOracleList) {
+
+            Optional<BranchPostgresql> existingBranchOptional =
+                    branchPostgresqlRepository.findByCode(branchOracle.getCode());
+
+            if (existingBranchOptional.isPresent()) {
+                BranchPostgresql existingBranch = existingBranchOptional.get();
+                boolean isUpdated = false;
+
+                if (!Objects.equals(existingBranch.getSocialReason(), branchOracle.getSocialReason())) {
+                    existingBranch.setSocialReason(branchOracle.getSocialReason());
+                    isUpdated = true;
+                }
+
+                if (!Objects.equals(existingBranch.getCnpj(), branchOracle.getCnpj())) {
+                    existingBranch.setCnpj(branchOracle.getCnpj());
+                    isUpdated = true;
+                }
+
+                if (isUpdated) {
+                    branchesToSave.add(existingBranch);
+                }
+
+            } else {
+                BranchPostgresql newBranch = new BranchPostgresql();
+                newBranch.setCode(branchOracle.getCode());
+                newBranch.setSocialReason(branchOracle.getSocialReason());
+                newBranch.setCnpj(branchOracle.getCnpj());
+
+                branchesToSave.add(newBranch);
+            }
+        }
+
+        if (!branchesToSave.isEmpty()) {
+            branchPostgresqlRepository.saveAll(branchesToSave);
+            return "Branches synchronized successfully!";
+        }
+
+        return "No changes detected for branches.";
     }
     private String geraEmailPeloNome(String name) {
         if (name == null || name.isEmpty()) {

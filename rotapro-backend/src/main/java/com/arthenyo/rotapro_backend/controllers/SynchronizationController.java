@@ -34,4 +34,8 @@ public class SynchronizationController {
     public ResponseEntity<String> createRoute() {
         return ResponseEntity.ok(synchronizationService.syncRoutes());
     }
+    @PostMapping("/branches")
+    public ResponseEntity<String> createBranche() {
+        return ResponseEntity.ok(synchronizationService.syncBranches());
+    }
 }
