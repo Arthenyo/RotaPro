@@ -30,15 +30,16 @@ public class FuelSupplyPostgresql {
     private Double totalCost;
     @Column(name = "preço_por_litro ")
     private Double pricePerLiter;
-    @Column(name = "Posto_de_gasolina")
-    private String gasStation;
+    @ManyToOne
+    @JoinColumn(name = "Posto_de_gasolina")
+    private EstablishmentsPostgresql establishments;
     @Column(columnDefinition = "TEXT", name = "observações ")
     private String observations;
 
     public FuelSupplyPostgresql() {
     }
 
-    public FuelSupplyPostgresql(Long id, DriverPostgresql driver, VehiclePostgresql vehicle, RoutePostgresql route, LocalDate fuelDate, Integer odômetro, Double liters, Double totalCost, Double pricePerLiter, String gasStation, String observations) {
+    public FuelSupplyPostgresql(Long id, DriverPostgresql driver, VehiclePostgresql vehicle, RoutePostgresql route, LocalDate fuelDate, Integer odômetro, Double liters, Double totalCost, Double pricePerLiter, EstablishmentsPostgresql establishments, String observations) {
         this.id = id;
         this.driver = driver;
         this.vehicle = vehicle;
@@ -48,7 +49,7 @@ public class FuelSupplyPostgresql {
         this.liters = liters;
         this.totalCost = totalCost;
         this.pricePerLiter = pricePerLiter;
-        this.gasStation = gasStation;
+        this.establishments = establishments;
         this.observations = observations;
     }
 
@@ -124,12 +125,11 @@ public class FuelSupplyPostgresql {
         this.pricePerLiter = pricePerLiter;
     }
 
-    public String getGasStation() {
-        return gasStation;
+    public EstablishmentsPostgresql getEstablishments() {
+        return establishments;
     }
-
-    public void setGasStation(String gasStation) {
-        this.gasStation = gasStation;
+    public void setEstablishments(EstablishmentsPostgresql establishments) {
+        this.establishments = establishments;
     }
 
     public String getObservations() {

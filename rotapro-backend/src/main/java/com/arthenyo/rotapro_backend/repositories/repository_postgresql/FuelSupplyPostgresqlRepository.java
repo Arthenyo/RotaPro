@@ -27,9 +27,9 @@ public interface FuelSupplyPostgresqlRepository extends JpaRepository<FuelSupply
             @Param("endDate") LocalDate endDate,
             Pageable pageable
     );
-    @Query("SELECT f.gasStation, COUNT(f.id) " +
+    @Query("SELECT f.establishments.name, COUNT(f.id) " +
             "FROM FuelSupplyPostgresql f " +
-            "GROUP BY f.gasStation " +
+            "GROUP BY f.establishments.name " +
             "ORDER BY COUNT(f.id) DESC")
     List<Object[]> findGasStationUsageCount();
     @Query("SELECT f.driver.name, COUNT(f.id) " +

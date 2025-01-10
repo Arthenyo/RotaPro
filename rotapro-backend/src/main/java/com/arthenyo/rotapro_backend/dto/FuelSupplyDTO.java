@@ -36,7 +36,7 @@ public class FuelSupplyDTO {
         liters = entity.getLiters();
         totalCost = entity.getTotalCost();
         pricePerLiter = entity.getPricePerLiter();
-        gasStation = entity.getGasStation();
+        gasStation = entity.getEstablishments().getName();
         observations = entity.getObservations();
     }
 

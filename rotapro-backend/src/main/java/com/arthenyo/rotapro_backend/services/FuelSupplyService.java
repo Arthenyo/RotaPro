@@ -1,17 +1,12 @@
 package com.arthenyo.rotapro_backend.services;
 
-import com.arthenyo.rotapro_backend.customErro.GasStationUsageDTO;
+import com.arthenyo.rotapro_backend.dto.GasStationUsageDTO;
 import com.arthenyo.rotapro_backend.dto.DriverSupplyCountDTO;
 import com.arthenyo.rotapro_backend.dto.DriverTotalCostDTO;
 import com.arthenyo.rotapro_backend.dto.FuelSupplyDTO;
-import com.arthenyo.rotapro_backend.model.model_postgresql.DriverPostgresql;
-import com.arthenyo.rotapro_backend.model.model_postgresql.FuelSupplyPostgresql;
-import com.arthenyo.rotapro_backend.model.model_postgresql.RoutePostgresql;
-import com.arthenyo.rotapro_backend.model.model_postgresql.VehiclePostgresql;
-import com.arthenyo.rotapro_backend.repositories.repository_postgresql.DriverPostgresqlRepository;
-import com.arthenyo.rotapro_backend.repositories.repository_postgresql.FuelSupplyPostgresqlRepository;
-import com.arthenyo.rotapro_backend.repositories.repository_postgresql.RoutePostgresqlRepository;
-import com.arthenyo.rotapro_backend.repositories.repository_postgresql.VehiclePostgresqlRepository;
+import com.arthenyo.rotapro_backend.model.model_postgresql.*;
+import com.arthenyo.rotapro_backend.model.model_postgresql.enums.TypeEstablishments;
+import com.arthenyo.rotapro_backend.repositories.repository_postgresql.*;
 import com.arthenyo.rotapro_backend.services.exception.ResponseStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,6 +29,8 @@ public class FuelSupplyService {
     private VehiclePostgresqlRepository vehiclePostgresqlRepository;
     @Autowired
     private RoutePostgresqlRepository routePostgresqlRepository;
+    @Autowired
+    private EstablishmentsPostgresqlRepository establishmentsPostgresqlRepository;
     public Page<FuelSupplyDTO> findByDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable) {
         Page<FuelSupplyPostgresql> pageRange = fuelSupplyPostgresqlRepository.findAllBetweenDates(startDate, endDate, pageable);
         return pageRange.map(FuelSupplyDTO::new);
@@ -140,7 +137,15 @@ public class FuelSupplyService {
         if (dto.getLiters() != null && dto.getLiters() > 0) {
             entity.setPricePerLiter(dto.getTotalCost() / dto.getLiters());
         }
-        entity.setGasStation(dto.getGasStation());
+        if (dto.getGasStation() != null) {
+            Optional<EstablishmentsPostgresql> optEst = establishmentsPostgresqlRepository
+                    .findByName(dto.getGasStation());
+            if (!optEst.isPresent()) {
+                throw new ResponseStatusException("ERRO: Estabelecimento não encontrado: " + dto.getGasStation());
+            }
+            entity.setEstablishments(optEst.get());
+        }
+
         entity.setObservations(dto.getObservations());
     }
 }

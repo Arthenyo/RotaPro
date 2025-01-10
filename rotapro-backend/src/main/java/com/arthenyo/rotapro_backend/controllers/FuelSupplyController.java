@@ -1,6 +1,6 @@
 package com.arthenyo.rotapro_backend.controllers;
 
-import com.arthenyo.rotapro_backend.customErro.GasStationUsageDTO;
+import com.arthenyo.rotapro_backend.dto.GasStationUsageDTO;
 import com.arthenyo.rotapro_backend.dto.DriverSupplyCountDTO;
 import com.arthenyo.rotapro_backend.dto.DriverTotalCostDTO;
 import com.arthenyo.rotapro_backend.dto.FuelSupplyDTO;

@@ -3,6 +3,7 @@ package com.arthenyo.rotapro_backend.repositories.repository_oracle;
 import com.arthenyo.rotapro_backend.model.model_oracle.RouteOracle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -28,10 +29,10 @@ public interface RouteOracleRepository extends JpaRepository<RouteOracle, Long> 
             "AND n.CODVEICULO IS NOT NULL " +
             "AND n.CODMOTORISTA != 0 " +
             "AND n.CODVEICULO != 0 " +
-            "AND n.CODFILIAL = 1 " +
-            "AND m.codfilial = 1 " +
+            "AND n.CODFILIAL = :codfilial " +
+            "AND m.codfilial = :codfilial " +
             "GROUP BY m.nummdfe, m.codmotorista, e.nome, m.codveiculo, v.descricao, n.NUMCAR, c.totpeso, m.situacaomdfe " +
             "ORDER BY m.nummdfe",
             nativeQuery = true)
-    List<RouteOracle> findAllRoutesDataForToday();
+    List<RouteOracle> findAllRoutesDataForToday(@Param("codfilial") Integer codfilial);
 }

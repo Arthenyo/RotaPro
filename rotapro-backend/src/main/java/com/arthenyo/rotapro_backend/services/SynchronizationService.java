@@ -245,7 +245,11 @@ public class SynchronizationService {
         return "No changes detected for drivers.";
     }
     public String syncHelpers(Integer codsetor, Integer codfilial) {
-        List<HelperOracle> helperOracleList = helperOracleRepository.getAllHelper(codsetor, codfilial);
+        Optional<BranchPostgresql> branch = branchPostgresqlRepository.findByCode(codfilial);
+        if (!branch.isPresent()) {
+            return "Filial não encontrada no banco de dados!";
+        }
+        List<HelperOracle> helperOracleList = helperOracleRepository.getAllHelper(codsetor, branch.get().getCode());
         if (helperOracleList.isEmpty()) {
             return "No helpers found in Oracle Database!";
         }
@@ -392,8 +396,13 @@ public class SynchronizationService {
 
         return "No changes detected for clients.";
     }
-    public String syncRoutes() {
-        List<RouteOracle> routesOracle = routeOracleRepository.findAllRoutesDataForToday();
+    public String syncRoutes(Integer codfilial) {
+
+        Optional<BranchPostgresql> branch = branchPostgresqlRepository.findByCode(codfilial);
+        if (!branch.isPresent()) {
+            return "Filial não encontrada no banco de dados!";
+        }
+        List<RouteOracle> routesOracle = routeOracleRepository.findAllRoutesDataForToday(branch.get().getCode());
         if (routesOracle.isEmpty()) {
             return "No routes found in Oracle Database!";
         }

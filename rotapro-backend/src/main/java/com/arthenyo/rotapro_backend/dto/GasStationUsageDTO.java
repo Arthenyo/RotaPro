@@ -1,4 +1,4 @@
-package com.arthenyo.rotapro_backend.customErro;
+package com.arthenyo.rotapro_backend.dto;
 
 public class GasStationUsageDTO {
 

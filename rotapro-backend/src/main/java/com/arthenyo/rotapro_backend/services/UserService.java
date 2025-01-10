@@ -26,6 +26,7 @@ public class UserService {
         entity.setBirthDate(dto.getBirthDate());
         entity.setPassword(dto.getPassword());
         entity.setPhone(dto.getPhone());
+        entity.getRoles().clear();
         for (RoleDTO roleDTO: dto.getRoles()){
             RolePostgresql role = new RolePostgresql();
             role.setId(roleDTO.getId());

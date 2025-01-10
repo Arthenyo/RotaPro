@@ -31,8 +31,8 @@ public class SynchronizationController {
         return ResponseEntity.ok(synchronizationService.syncVehicles());
     }
     @PostMapping("/routes")
-    public ResponseEntity<String> createRoute() {
-        return ResponseEntity.ok(synchronizationService.syncRoutes());
+    public ResponseEntity<String> createRoute(@PathParam("codfilial") Integer codfilial) {
+        return ResponseEntity.ok(synchronizationService.syncRoutes(codfilial));
     }
     @PostMapping("/branches")
     public ResponseEntity<String> createBranche() {
