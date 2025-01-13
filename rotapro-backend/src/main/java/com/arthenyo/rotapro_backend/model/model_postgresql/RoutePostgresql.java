@@ -31,7 +31,9 @@ public class RoutePostgresql {
             joinColumns = @JoinColumn(name = "rota_id"),
             inverseJoinColumns = @JoinColumn(name = "usuario_id")
     )
-    private List<UserPostgresql> helpers = new ArrayList<>();
+    private List<HelperPostgresql> helpers = new ArrayList<>();
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RouteStopPostgresql> stops = new ArrayList<>();
     @Column(name = "carregamento")
     private Integer charge;
     @Column(name = "mdfe")
@@ -104,12 +106,20 @@ public class RoutePostgresql {
         this.clients = clients;
     }
 
-    public List<UserPostgresql> getHelpers() {
+    public List<HelperPostgresql> getHelpers() {
         return helpers;
     }
 
-    public void setHelpers(List<UserPostgresql> helpers) {
+    public void setHelpers(List<HelperPostgresql> helpers) {
         this.helpers = helpers;
+    }
+
+    public List<RouteStopPostgresql> getStops() {
+        return stops;
+    }
+
+    public void setStops(List<RouteStopPostgresql> stops) {
+        this.stops = stops;
     }
 
     public Integer getCharge() {

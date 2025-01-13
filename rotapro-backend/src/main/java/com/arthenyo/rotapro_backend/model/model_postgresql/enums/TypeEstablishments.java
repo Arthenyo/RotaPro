@@ -1,7 +1,8 @@
 package com.arthenyo.rotapro_backend.model.model_postgresql.enums;
-
 public enum TypeEstablishments {
-    HOTEL,
+    POSTO_COMBUSTIVEL,
     RESTAURANTE,
-    POSTO;
+    HOTEL,
+    LOJA,
+    OUTRO
 }
