@@ -50,8 +50,12 @@ public class SynchronizationService {
     private BranchPostgresqlRepository branchPostgresqlRepository;
 
 
-    public String syncVehicles() {
-        List<VehicleOracle> vehicleOracles = vehicleOracleRepository.getAllVehicles();
+    public String syncVehicles(Integer codBranch) {
+        Optional<BranchPostgresql> branch = branchPostgresqlRepository.findByCode(codBranch);
+        if (!branch.isPresent()) {
+            return "Filial não encontrada no banco de dados!";
+        }
+        List<VehicleOracle> vehicleOracles = vehicleOracleRepository.getAllVehicles(branch.get().getCode());
         if (vehicleOracles.isEmpty()) {
             return "No vehicles found in Oracle Database!";
         }
@@ -150,8 +154,12 @@ public class SynchronizationService {
         return "No changes detected for vehicles.";
     }
 
-    public String syncDrivers() {
-        List<DriverOracle> driverOracleList = driverOracleRepository.getAllDriver();
+    public String syncDrivers(Integer codBranch) {
+        Optional<BranchPostgresql> branch = branchPostgresqlRepository.findByCode(codBranch);
+        if (!branch.isPresent()) {
+            return "Filial não encontrada no banco de dados!";
+        }
+        List<DriverOracle> driverOracleList = driverOracleRepository.getAllDriver(branch.get().getCode());
         if (driverOracleList.isEmpty()) {
             return "No drivers found in Oracle Database!";
         }
@@ -435,7 +443,9 @@ public class SynchronizationService {
                 boolean isUpdated = false;
 
                 existingRoute.setDriver(driver.get());
+                driver.get().setAvailabilities(Availabilities.IN_LOAD);
                 existingRoute.setVehicle(vehicle.get());
+                vehicle.get().setAvailabilities(Availabilities.IN_LOAD);
 
                 if (!existingRoute.getCharge().equals(routeOracle.getNumCar())) {
                     existingRoute.setCharge(routeOracle.getNumCar());

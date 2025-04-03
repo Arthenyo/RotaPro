@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/synchronize")
@@ -19,19 +22,19 @@ public class SynchronizationController {
         return ResponseEntity.ok(synchronizationService.syncClients());
     }
     @PostMapping("/drivers")
-    public ResponseEntity<String> createDriver(){
-        return ResponseEntity.ok(synchronizationService.syncDrivers());
+    public ResponseEntity<String> createDriver(@RequestParam("codfilial") Integer codfilial){
+        return ResponseEntity.ok(synchronizationService.syncDrivers(codfilial));
     }
     @PostMapping("/helpers")
-    public ResponseEntity<String> createHelpers(@PathParam("codsetor") Integer codsetor, @PathParam("codfilial") Integer codfilial){
+    public ResponseEntity<String> createHelpers(@RequestParam("codsetor") Integer codsetor, @RequestParam("codfilial") Integer codfilial){
         return ResponseEntity.ok(synchronizationService.syncHelpers(codsetor, codfilial));
     }
     @PostMapping("/vehicles")
-    public ResponseEntity<String> createVehicle(){
-        return ResponseEntity.ok(synchronizationService.syncVehicles());
+    public ResponseEntity<String> createVehicle(@RequestParam("codfilial") Integer codfilial){
+        return ResponseEntity.ok(synchronizationService.syncVehicles(codfilial));
     }
     @PostMapping("/routes")
-    public ResponseEntity<String> createRoute(@PathParam("codfilial") Integer codfilial) {
+    public ResponseEntity<String> createRoute(@RequestParam("codfilial") Integer codfilial) {
         return ResponseEntity.ok(synchronizationService.syncRoutes(codfilial));
     }
     @PostMapping("/branches")
