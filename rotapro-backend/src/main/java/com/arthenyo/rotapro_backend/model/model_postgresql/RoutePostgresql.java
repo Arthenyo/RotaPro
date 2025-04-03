@@ -36,6 +36,7 @@ public class RoutePostgresql {
     private List<RouteStopPostgresql> stops = new ArrayList<>();
     @Column(name = "carregamento")
     private Integer charge;
+    private String numnotas;
     @Column(name = "mdfe")
     private Integer numMdfe;
     @Column(name = "situacao_mdfe")
@@ -52,17 +53,19 @@ public class RoutePostgresql {
     private Integer kmfinal;
     @Column(name = "km_total")
     private Integer totalKm;
+    private Long totalClientes;
     @Enumerated(EnumType.STRING)
     private StatusRouter status;
 
     public RoutePostgresql() {
     }
 
-    public RoutePostgresql(Long id, DriverPostgresql driver, VehiclePostgresql vehicle, Integer charge, Integer numMdfe, Integer situacaoMdfe, Double totalWeight, LocalDate startDate, LocalDate endDate, Integer kminicial, Integer kmfinal, Integer totalKm, StatusRouter status) {
+    public RoutePostgresql(Long id, DriverPostgresql driver, VehiclePostgresql vehicle, Integer charge, String numnotas, Integer numMdfe, Integer situacaoMdfe, Double totalWeight, LocalDate startDate, LocalDate endDate, Integer kminicial, Integer kmfinal, Integer totalKm, Long totalClientes, StatusRouter status) {
         this.id = id;
         this.driver = driver;
         this.vehicle = vehicle;
         this.charge = charge;
+        this.numnotas = numnotas;
         this.numMdfe = numMdfe;
         this.situacaoMdfe = situacaoMdfe;
         this.totalWeight = totalWeight;
@@ -71,6 +74,7 @@ public class RoutePostgresql {
         this.kminicial = kminicial;
         this.kmfinal = kmfinal;
         this.totalKm = totalKm;
+        this.totalClientes = totalClientes;
         this.status = status;
     }
 
@@ -128,6 +132,14 @@ public class RoutePostgresql {
 
     public void setCharge(Integer charge) {
         this.charge = charge;
+    }
+
+    public String getNumnotas() {
+        return numnotas;
+    }
+
+    public void setNumnotas(String numnotas) {
+        this.numnotas = numnotas;
     }
 
     public Integer getNumMdfe() {
@@ -192,6 +204,14 @@ public class RoutePostgresql {
 
     public void setTotalKm(Integer totalKm) {
         this.totalKm = totalKm;
+    }
+
+    public Long getTotalClientes() {
+        return totalClientes;
+    }
+
+    public void setTotalClientes(Long totalClientes) {
+        this.totalClientes = totalClientes;
     }
 
     public StatusRouter getStatus() {

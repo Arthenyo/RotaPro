@@ -16,10 +16,12 @@ public class RouteDTO {
 
     private Integer vehicle;
 
-    private List<Integer> clients = new ArrayList<>();
-    private List<Integer> helpers = new ArrayList<>();
+    private List<String> clients = new ArrayList<>();
+    private Long totalClientes;
+    private List<String> helpers = new ArrayList<>();
 
     private Integer charge;
+    private String numnotas;
     private Integer numMdfe;
     private Integer situacaoMdfe;
     private Double totalWeight;
@@ -32,7 +34,7 @@ public class RouteDTO {
     @Enumerated(EnumType.STRING)
     private StatusRouter status;
 
-    private List<RouteStopDTO> stops = new ArrayList<>(); // Lista de paradas
+    private List<RouteStopDTO> stops = new ArrayList<>();
 
     public RouteDTO() {
     }
@@ -42,6 +44,8 @@ public class RouteDTO {
         driver = entity.getDriver().getRegistration();
         vehicle = entity.getVehicle().getCodVehicle();
         charge = entity.getCharge();
+        numnotas = entity.getNumnotas();
+        totalClientes = entity.getTotalClientes();
         numMdfe = entity.getNumMdfe();
         situacaoMdfe = entity.getSituacaoMdfe();
         totalWeight = entity.getTotalWeight();
@@ -53,18 +57,16 @@ public class RouteDTO {
         status = entity.getStatus();
 
         for (ClientPostgresql client : entity.getClients()) {
-            clients.add(client.getCodClient());
+            clients.add(client.getName());
         }
         for (HelperPostgresql helper : entity.getHelpers()) {
-            helpers.add(helper.getRegistration());
+            helpers.add(helper.getName());
         }
 
         for (RouteStopPostgresql stop : entity.getStops()) {
             stops.add(new RouteStopDTO(stop));
         }
     }
-
-    // Getters e Setters
 
     public Long getId() {
         return id;
@@ -78,16 +80,24 @@ public class RouteDTO {
         return vehicle;
     }
 
-    public List<Integer> getClients() {
+    public List<String> getClients() {
         return clients;
     }
 
-    public List<Integer> getHelpers() {
+    public Long getTotalClientes() {
+        return totalClientes;
+    }
+
+    public List<String> getHelpers() {
         return helpers;
     }
 
     public Integer getCharge() {
         return charge;
+    }
+
+    public String getNumnotas() {
+        return numnotas;
     }
 
     public Integer getNumMdfe() {
@@ -128,69 +138,5 @@ public class RouteDTO {
 
     public List<RouteStopDTO> getStops() {
         return stops;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setDriver(Integer driver) {
-        this.driver = driver;
-    }
-
-    public void setVehicle(Integer vehicle) {
-        this.vehicle = vehicle;
-    }
-
-    public void setClients(List<Integer> clients) {
-        this.clients = clients;
-    }
-
-    public void setHelpers(List<Integer> helpers) {
-        this.helpers = helpers;
-    }
-
-    public void setCharge(Integer charge) {
-        this.charge = charge;
-    }
-
-    public void setNumMdfe(Integer numMdfe) {
-        this.numMdfe = numMdfe;
-    }
-
-    public void setSituacaoMdfe(Integer situacaoMdfe) {
-        this.situacaoMdfe = situacaoMdfe;
-    }
-
-    public void setTotalWeight(Double totalWeight) {
-        this.totalWeight = totalWeight;
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    public void setKminicial(Integer kminicial) {
-        this.kminicial = kminicial;
-    }
-
-    public void setKmfinal(Integer kmfinal) {
-        this.kmfinal = kmfinal;
-    }
-
-    public void setTotalKm(Integer totalKm) {
-        this.totalKm = totalKm;
-    }
-
-    public void setStatus(StatusRouter status) {
-        this.status = status;
-    }
-
-    public void setStops(List<RouteStopDTO> stops) {
-        this.stops = stops;
     }
 }

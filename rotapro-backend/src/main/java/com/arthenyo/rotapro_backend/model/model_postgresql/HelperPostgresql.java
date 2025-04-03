@@ -20,20 +20,16 @@ public class HelperPostgresql {
     private String email;
     @Column(name = "FONE")
     private String fone;
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private UserPostgresql user;
     public HelperPostgresql() {
     }
 
-    public HelperPostgresql(Long id, Integer registration, String name, Integer sector, String email, String fone, UserPostgresql user) {
+    public HelperPostgresql(Long id, Integer registration, String name, Integer sector, String email, String fone) {
         this.id = id;
         this.registration = registration;
         this.name = name;
         this.sector = sector;
         this.email = email;
         this.fone = fone;
-        this.user = user;
     }
 
     public Long getId() {
@@ -82,14 +78,6 @@ public class HelperPostgresql {
 
     public void setFone(String fone) {
         this.fone = fone;
-    }
-
-    public UserPostgresql getUser() {
-        return user;
-    }
-
-    public void setUser(UserPostgresql user) {
-        this.user = user;
     }
 
     @Override

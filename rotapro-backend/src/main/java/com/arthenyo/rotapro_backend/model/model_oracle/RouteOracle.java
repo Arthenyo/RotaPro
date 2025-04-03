@@ -28,6 +28,8 @@ public class RouteOracle {
     private Integer codVeiculo;
     @Column(name = "TOTALPESO")
     private Double totalPeso;
+    private Long totalClientes;
+    private String numnotas;
 
     public List<Integer> getCodCliAsList() {
         return Arrays.stream(codCli.split(","))
@@ -97,5 +99,21 @@ public class RouteOracle {
 
     public void setTotalPeso(Double totalPeso) {
         this.totalPeso = totalPeso;
+    }
+
+    public Long getTotalClientes() {
+        return totalClientes;
+    }
+
+    public void setTotalClientes(Long totalClientes) {
+        this.totalClientes = totalClientes;
+    }
+
+    public String getNumnotas() {
+        return numnotas;
+    }
+
+    public void setNumnotas(String numnotas) {
+        this.numnotas = numnotas;
     }
 }

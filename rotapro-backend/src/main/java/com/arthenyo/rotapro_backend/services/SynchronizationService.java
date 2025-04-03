@@ -262,10 +262,6 @@ public class SynchronizationService {
             return "No helpers found in Oracle Database!";
         }
 
-        RolePostgresql roleHelper = rolePostgresqlRepository
-                .findByAuthority("ROLE_HELPER")
-                .orElseThrow(() -> new RuntimeException("ROLE_HELPER not found in database!"));
-
         List<HelperPostgresql> helpersToSave = new ArrayList<>();
 
         for (HelperOracle helperOracle : helperOracleList) {
@@ -296,21 +292,6 @@ public class SynchronizationService {
                     isUpdated = true;
                 }
 
-                if (existingHelper.getUser() == null) {
-                    UserPostgresql newUser = new UserPostgresql();
-                    newUser.setName(helperOracle.getName());
-                    newUser.setEmail(helperOracle.getEmail());
-                    newUser.setPhone("11999999999");
-                    newUser.setBirthDate(LocalDate.now());
-                    newUser.setPassword("padrao123");
-                    newUser.getRoles().add(roleHelper);
-
-                    userPostgresqlRepository.save(newUser);
-
-                    existingHelper.setUser(newUser);
-                    isUpdated = true;
-                }
-
                 if (isUpdated) {
                     helpersToSave.add(existingHelper);
                 }
@@ -322,19 +303,6 @@ public class SynchronizationService {
                 newHelper.setSector(helperOracle.getSector());
                 newHelper.setEmail(helperOracle.getEmail());
                 newHelper.setFone(helperOracle.getFone());
-
-                UserPostgresql newUser = new UserPostgresql();
-                newUser.setName(helperOracle.getName());
-                newUser.setEmail(helperOracle.getEmail());
-                newUser.setPhone("11999999999");
-                newUser.setBirthDate(LocalDate.now());
-                newUser.setPassword("padrao123");
-                newUser.getRoles().add(roleHelper);
-
-                userPostgresqlRepository.save(newUser);
-
-                newHelper.setUser(newUser);
-
                 helpersToSave.add(newHelper);
             }
         }
@@ -420,6 +388,10 @@ public class SynchronizationService {
         for (RouteOracle routeOracle : routesOracle) {
             Optional<RoutePostgresql> existingRouteOptional = routePostgresqlRepository.findByCharge(routeOracle.getNumCar());
 
+            if (existingRouteOptional.isPresent()) {
+                continue;
+            }
+
             Optional<DriverPostgresql> driver = driverPostgresqlRepository.findByRegistration(routeOracle.getCodMotorista());
             Optional<VehiclePostgresql> vehicle = vehiclePostgresqlRepository.findByCodVehicle(routeOracle.getCodVeiculo());
 
@@ -438,75 +410,22 @@ public class SynchronizationService {
                 continue;
             }
 
-            if (existingRouteOptional.isPresent()) {
-                RoutePostgresql existingRoute = existingRouteOptional.get();
-                boolean isUpdated = false;
+            RoutePostgresql newRoute = new RoutePostgresql();
+            newRoute.setCharge(routeOracle.getNumCar());
+            newRoute.setNumnotas(routeOracle.getNumnotas());
+            newRoute.setTotalClientes(routeOracle.getTotalClientes());
+            newRoute.setNumMdfe(routeOracle.getNumMdfe());
+            newRoute.setSituacaoMdfe(routeOracle.getSituacaoMdfe());
+            newRoute.setTotalWeight(routeOracle.getTotalPeso());
+            newRoute.setStartDate(routeOracle.getDtSaida());
+            newRoute.setStatus(StatusRouter.EM_ANDAMENTO);
 
-                existingRoute.setDriver(driver.get());
-                driver.get().setAvailabilities(Availabilities.IN_LOAD);
-                existingRoute.setVehicle(vehicle.get());
-                vehicle.get().setAvailabilities(Availabilities.IN_LOAD);
+            newRoute.setDriver(driver.get());
+            newRoute.setVehicle(vehicle.get());
 
-                if (!existingRoute.getCharge().equals(routeOracle.getNumCar())) {
-                    existingRoute.setCharge(routeOracle.getNumCar());
-                    isUpdated = true;
-                }
-                if (!existingRoute.getNumMdfe().equals(routeOracle.getNumMdfe())) {
-                    existingRoute.setNumMdfe(routeOracle.getNumMdfe());
-                    isUpdated = true;
-                }
-                if (!existingRoute.getSituacaoMdfe().equals(routeOracle.getSituacaoMdfe())) {
-                    existingRoute.setSituacaoMdfe(routeOracle.getSituacaoMdfe());
-                    isUpdated = true;
-                }
-                if (!existingRoute.getTotalWeight().equals(routeOracle.getTotalPeso())) {
-                    existingRoute.setTotalWeight(routeOracle.getTotalPeso());
-                    isUpdated = true;
-                }
-                if (!existingRoute.getStartDate().equals(routeOracle.getDtSaida())) {
-                    existingRoute.setStartDate(routeOracle.getDtSaida());
-                    isUpdated = true;
-                }
-                if (!existingRoute.getEndDate().equals(routeOracle.getDtSaida())) {
-                    existingRoute.setEndDate(routeOracle.getDtSaida());
-                    isUpdated = true;
-                }
-                if (routeOracle.getSituacaoMdfe() == 102) {
-                    existingRoute.setStatus(StatusRouter.CONCLUIDA);
-                    isUpdated = true;
-                }
+            newRoute.setClients(clientEntities);
 
-                List<Long> existingClientIds = existingRoute.getClients().stream()
-                        .map(ClientPostgresql::getId)
-                        .collect(Collectors.toList());
-                List<Long> newClientIds = clientEntities.stream()
-                        .map(ClientPostgresql::getId)
-                        .collect(Collectors.toList());
-
-                if (!existingClientIds.containsAll(newClientIds) || !newClientIds.containsAll(existingClientIds)) {
-                    existingRoute.setClients(clientEntities);
-                    isUpdated = true;
-                }
-
-                if (isUpdated) {
-                    routesToSave.add(existingRoute);
-                }
-            } else {
-                RoutePostgresql newRoute = new RoutePostgresql();
-                newRoute.setCharge(routeOracle.getNumCar());
-                newRoute.setNumMdfe(routeOracle.getNumMdfe());
-                newRoute.setSituacaoMdfe(routeOracle.getSituacaoMdfe());
-                newRoute.setTotalWeight(routeOracle.getTotalPeso());
-                newRoute.setStartDate(routeOracle.getDtSaida());
-                newRoute.setStatus(StatusRouter.EM_ANDAMENTO);
-
-                newRoute.setDriver(driver.get());
-                newRoute.setVehicle(vehicle.get());
-
-                newRoute.setClients(clientEntities);
-
-                routesToSave.add(newRoute);
-            }
+            routesToSave.add(newRoute);
         }
 
         if (!routesToSave.isEmpty()) {
@@ -516,6 +435,7 @@ public class SynchronizationService {
 
         return "No changes detected for routes.";
     }
+
     public String syncBranches() {
         List<BranchOracle> branchOracleList = branchOracleRepository.getAllBranch();
         if (branchOracleList.isEmpty()) {

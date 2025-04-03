@@ -8,15 +8,17 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface RouteOracleRepository extends JpaRepository<RouteOracle, Long> {
-    @Query(value = "SELECT " +
+    @Query(nativeQuery = true, value = "SELECT " +
             "m.nummdfe AS numMdfe, " +
             "LISTAGG(DISTINCT p.CODCLI, ',') WITHIN GROUP (ORDER BY p.CODCLI) AS codCli, " +
             "m.codmotorista AS codMotorista, " +
             "m.codveiculo AS codVeiculo, " +
             "n.NUMCAR AS numCar, " +
+            "c.NUMNOTAS AS numnotas, " +
             "MAX(n.DTSAIDA) AS dtSaida, " +
             "c.totpeso / 1000.0 AS totalPeso, " +
-            "m.situacaomdfe AS situacaoMdfe " +
+            "m.situacaomdfe AS situacaoMdfe, " +
+            "COUNT(DISTINCT p.CODCLI) AS totalClientes " +
             "FROM pcnfsaid n " +
             "JOIN pcpedc p ON n.NUMCAR = p.NUMCAR " +
             "JOIN pcmanifestoeletronicoi i ON n.NUMNOTA = i.numnota " +
@@ -31,8 +33,7 @@ public interface RouteOracleRepository extends JpaRepository<RouteOracle, Long> 
             "AND n.CODVEICULO != 0 " +
             "AND n.CODFILIAL = :codfilial " +
             "AND m.codfilial = :codfilial " +
-            "GROUP BY m.nummdfe, m.codmotorista, e.nome, m.codveiculo, v.descricao, n.NUMCAR, c.totpeso, m.situacaomdfe " +
-            "ORDER BY m.nummdfe",
-            nativeQuery = true)
+            "GROUP BY m.nummdfe, m.codmotorista, e.nome, m.codveiculo, v.descricao, n.NUMCAR, c.NUMNOTAS, c.totpeso, m.situacaomdfe " +
+            "ORDER BY m.nummdfe")
     List<RouteOracle> findAllRoutesDataForToday(@Param("codfilial") Integer codfilial);
 }
