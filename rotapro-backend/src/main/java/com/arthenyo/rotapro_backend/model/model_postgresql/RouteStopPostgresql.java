@@ -1,8 +1,10 @@
 package com.arthenyo.rotapro_backend.model.model_postgresql;
 
+import com.arthenyo.rotapro_backend.dto.FuelSupplyDetailsDTO;
 import com.arthenyo.rotapro_backend.model.model_postgresql.enums.StopType;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -18,7 +20,7 @@ public class RouteStopPostgresql {
     private RoutePostgresql route;
 
     @ManyToOne
-    @JoinColumn(name = "estabelecimento_id", nullable = false)
+    @JoinColumn(name = "estabelecimento_id")
     private EstablishmentsPostgresql establishment;
 
     @Enumerated(EnumType.STRING)
@@ -33,6 +35,8 @@ public class RouteStopPostgresql {
 
     @Column(name = "custo", nullable = false)
     private Double cost;
+    @Transient
+    private FuelSupplyPostgresql fuelSupply;
 
     public RouteStopPostgresql() {
     }

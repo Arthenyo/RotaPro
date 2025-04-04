@@ -418,7 +418,7 @@ public class SynchronizationService {
             newRoute.setSituacaoMdfe(routeOracle.getSituacaoMdfe());
             newRoute.setTotalWeight(routeOracle.getTotalPeso());
             newRoute.setStartDate(routeOracle.getDtSaida());
-            newRoute.setStatus(StatusRouter.EM_ANDAMENTO);
+            newRoute.setStatus(StatusRouter.PLANEJADA);
 
             newRoute.setDriver(driver.get());
             newRoute.setVehicle(vehicle.get());
@@ -436,10 +436,10 @@ public class SynchronizationService {
         return "No changes detected for routes.";
     }
 
-    public String syncBranches() {
-        List<BranchOracle> branchOracleList = branchOracleRepository.getAllBranch();
+    public String syncBranches(Integer codigo) {
+        List<BranchOracle> branchOracleList = branchOracleRepository.getAllBranch(codigo);
         if (branchOracleList.isEmpty()) {
-            return "No branches found in Oracle Database!";
+            return "Filial não encontrada no banco de dados!";
         }
 
         List<BranchPostgresql> branchesToSave = new ArrayList<>();

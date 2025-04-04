@@ -1,21 +1,16 @@
 package com.arthenyo.rotapro_backend.dto;
 
-import com.arthenyo.rotapro_backend.model.model_postgresql.DriverPostgresql;
 import com.arthenyo.rotapro_backend.model.model_postgresql.FuelSupplyPostgresql;
-import com.arthenyo.rotapro_backend.model.model_postgresql.RoutePostgresql;
-import com.arthenyo.rotapro_backend.model.model_postgresql.VehiclePostgresql;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class FuelSupplyDTO {
     private Long id;
     private String driver;
     private String vehicle;
     private Integer route;
-    private LocalDate fuelDate;
+    private LocalTime fuelDate;
     private Integer odômetro;
     private Double liters;
     private Double totalCost;
@@ -36,7 +31,6 @@ public class FuelSupplyDTO {
         liters = entity.getLiters();
         totalCost = entity.getTotalCost();
         pricePerLiter = entity.getPricePerLiter();
-        gasStation = entity.getEstablishments().getName();
         observations = entity.getObservations();
     }
 
@@ -56,7 +50,7 @@ public class FuelSupplyDTO {
         return route;
     }
 
-    public LocalDate getFuelDate() {
+    public LocalTime getFuelDate() {
         return fuelDate;
     }
 

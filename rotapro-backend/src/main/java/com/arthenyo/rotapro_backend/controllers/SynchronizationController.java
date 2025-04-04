@@ -38,7 +38,7 @@ public class SynchronizationController {
         return ResponseEntity.ok(synchronizationService.syncRoutes(codfilial));
     }
     @PostMapping("/branches")
-    public ResponseEntity<String> createBranche() {
-        return ResponseEntity.ok(synchronizationService.syncBranches());
+    public ResponseEntity<String> createBranche(@RequestParam("codigo") Integer codigo) {
+        return ResponseEntity.ok(synchronizationService.syncBranches(codigo));
     }
 }

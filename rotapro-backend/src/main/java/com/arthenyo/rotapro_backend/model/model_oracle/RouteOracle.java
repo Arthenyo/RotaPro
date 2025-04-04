@@ -28,7 +28,9 @@ public class RouteOracle {
     private Integer codVeiculo;
     @Column(name = "TOTALPESO")
     private Double totalPeso;
+    @Column(name = "TOTALCLIENTES")
     private Long totalClientes;
+    @Column(name = "NUMNOTAS")
     private String numnotas;
 
     public List<Integer> getCodCliAsList() {

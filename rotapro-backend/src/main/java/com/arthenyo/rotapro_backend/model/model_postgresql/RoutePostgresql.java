@@ -29,8 +29,7 @@ public class RoutePostgresql {
     @JoinTable(
             name = "tb_rota_ajudantes",
             joinColumns = @JoinColumn(name = "rota_id"),
-            inverseJoinColumns = @JoinColumn(name = "usuario_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "usuario_id"))
     private List<HelperPostgresql> helpers = new ArrayList<>();
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RouteStopPostgresql> stops = new ArrayList<>();
@@ -53,6 +52,7 @@ public class RoutePostgresql {
     private Integer kmfinal;
     @Column(name = "km_total")
     private Integer totalKm;
+    @Column(name = "total_clientes")
     private Long totalClientes;
     @Enumerated(EnumType.STRING)
     private StatusRouter status;
