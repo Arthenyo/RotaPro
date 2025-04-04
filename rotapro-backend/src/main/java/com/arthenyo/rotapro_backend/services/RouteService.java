@@ -60,6 +60,13 @@ public class RouteService {
         routeStopPostgresql.setRoute(routePostgresqlRepository.findById(requestDTO.getRouteStop().getRouteId())
                .orElseThrow(() -> new ResponseStatusException("Rota ID " + requestDTO.getRouteStop().getRouteId() + " não encontrada.")));
 
+        if(routeStopPostgresql.getRoute().getKminicial() == null){
+            throw new ResponseStatusException("A rota precisa estar Iniciada");
+        }
+        if(routeStopPostgresql.getRoute().getStatus() == StatusRouter.CONCLUIDA){
+            throw new ResponseStatusException("A rota já está Concluída. voce nao pode adcionar parada em uma rota concluida");
+        }
+
         EstablishmentsPostgresql establishment = establishmentsPostgresqlRepository.findById(requestDTO.getRouteStop().getEstablishmentId())
                 .orElseThrow(() -> new ResponseStatusException("estabelecimento ID " + requestDTO.getRouteStop().getEstablishmentId() + " não encontrada."));
 
