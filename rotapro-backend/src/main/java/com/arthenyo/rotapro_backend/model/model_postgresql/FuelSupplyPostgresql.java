@@ -3,6 +3,7 @@ package com.arthenyo.rotapro_backend.model.model_postgresql;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
@@ -22,7 +23,7 @@ public class FuelSupplyPostgresql {
     @JoinColumn(name = "rota_id")
     private RoutePostgresql route;
     @Column(name = "hora_abastecimento", nullable = false)
-    private LocalTime fuelDate;
+    private LocalDateTime fuelDate;
     @Column(name = "odômetro ")
     private Integer odômetro;
     @Column(name = "litros ", nullable = false)
@@ -40,7 +41,7 @@ public class FuelSupplyPostgresql {
     public FuelSupplyPostgresql() {
     }
 
-    public FuelSupplyPostgresql(Long id, DriverPostgresql driver, VehiclePostgresql vehicle, RoutePostgresql route, LocalTime fuelDate, Integer odômetro, Double liters, Double totalCost, Double pricePerLiter, EstablishmentsPostgresql establishments, String observations) {
+    public FuelSupplyPostgresql(Long id, DriverPostgresql driver, VehiclePostgresql vehicle, RoutePostgresql route, LocalDateTime fuelDate, Integer odômetro, Double liters, Double totalCost, Double pricePerLiter, EstablishmentsPostgresql establishments, String observations) {
         this.id = id;
         this.driver = driver;
         this.vehicle = vehicle;
@@ -86,11 +87,11 @@ public class FuelSupplyPostgresql {
         this.route = route;
     }
 
-    public LocalTime getFuelDate() {
+    public LocalDateTime getFuelDate() {
         return fuelDate;
     }
 
-    public void setFuelDate(LocalTime fuelDate) {
+    public void setFuelDate(LocalDateTime fuelDate) {
         this.fuelDate = fuelDate;
     }
 

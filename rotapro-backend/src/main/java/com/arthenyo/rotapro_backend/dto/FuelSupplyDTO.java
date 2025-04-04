@@ -3,6 +3,7 @@ package com.arthenyo.rotapro_backend.dto;
 import com.arthenyo.rotapro_backend.model.model_postgresql.FuelSupplyPostgresql;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class FuelSupplyDTO {
@@ -10,7 +11,7 @@ public class FuelSupplyDTO {
     private String driver;
     private String vehicle;
     private Integer route;
-    private LocalTime fuelDate;
+    private LocalDateTime fuelDate;
     private Integer odômetro;
     private Double liters;
     private Double totalCost;
@@ -50,7 +51,7 @@ public class FuelSupplyDTO {
         return route;
     }
 
-    public LocalTime getFuelDate() {
+    public LocalDateTime getFuelDate() {
         return fuelDate;
     }
 

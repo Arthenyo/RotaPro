@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -157,8 +158,8 @@ public class RouteService {
                 fuelSupply.setVehicle(route.getVehicle());
 
                 if (routeStopPostgresql.getEndTime() != null) {
-                    LocalTime fuelTime = LocalTime.parse(routeStopPostgresql.getEndTime());
-                    fuelSupply.setFuelDate(fuelTime);
+                    LocalDateTime fuelDate = routeStopPostgresql.getEndTime();
+                    fuelSupply.setFuelDate(fuelDate);
                 }
 
                 fuelSupply.setEstablishments(routeStopPostgresql.getEstablishment());

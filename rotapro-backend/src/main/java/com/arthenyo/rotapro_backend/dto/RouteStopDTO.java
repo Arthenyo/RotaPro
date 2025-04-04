@@ -3,13 +3,15 @@ package com.arthenyo.rotapro_backend.dto;
 import com.arthenyo.rotapro_backend.model.model_postgresql.RouteStopPostgresql;
 import com.arthenyo.rotapro_backend.model.model_postgresql.enums.StopType;
 
+import java.time.LocalDateTime;
+
 public class RouteStopDTO {
     private Long id;
     private Long routeId;
     private Long establishmentId;
     private StopType stopType;
-    private String startTime;
-    private String endTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private Double cost;
 
     public RouteStopDTO() {
@@ -41,11 +43,11 @@ public class RouteStopDTO {
         return stopType;
     }
 
-    public String getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public String getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 

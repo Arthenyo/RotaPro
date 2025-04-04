@@ -5,6 +5,7 @@ import com.arthenyo.rotapro_backend.model.model_postgresql.enums.StopType;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -28,10 +29,10 @@ public class RouteStopPostgresql {
     private StopType stopType;
 
     @Column(name = "hora_inicio")
-    private String startTime;
+    private LocalDateTime startTime;
 
     @Column(name = "hora_fim")
-    private String endTime;
+    private LocalDateTime endTime;
 
     @Column(name = "custo", nullable = false)
     private Double cost;
@@ -41,7 +42,7 @@ public class RouteStopPostgresql {
     public RouteStopPostgresql() {
     }
 
-    public RouteStopPostgresql(Long id, RoutePostgresql route, EstablishmentsPostgresql establishment, StopType stopType, String startTime, String endTime, Double cost) {
+    public RouteStopPostgresql(Long id, RoutePostgresql route, EstablishmentsPostgresql establishment, StopType stopType, LocalDateTime startTime, LocalDateTime endTime, Double cost) {
         this.id = id;
         this.route = route;
         this.establishment = establishment;
@@ -79,19 +80,19 @@ public class RouteStopPostgresql {
         this.stopType = stopType;
     }
 
-    public String getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public String getEndTime() {
+    public LocalDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 
