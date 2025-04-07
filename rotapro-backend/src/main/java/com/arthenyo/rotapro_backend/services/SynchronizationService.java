@@ -7,6 +7,7 @@ import com.arthenyo.rotapro_backend.model.model_postgresql.enums.StatusRouter;
 import com.arthenyo.rotapro_backend.repositories.repository_oracle.*;
 import com.arthenyo.rotapro_backend.repositories.repository_postgresql.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.Normalizer;
@@ -48,6 +49,8 @@ public class SynchronizationService {
     private BranchOracleRepository branchOracleRepository;
     @Autowired
     private BranchPostgresqlRepository branchPostgresqlRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     public String syncVehicles(Integer codBranch) {
@@ -205,7 +208,7 @@ public class SynchronizationService {
                     newUser.setEmail(geraEmailPeloNome(driverOracle.getName()));
                     newUser.setPhone("11999999999");
                     newUser.setBirthDate(LocalDate.now()); // ou outro valor
-                    newUser.setPassword("padrao123");
+                    newUser.setPassword(passwordEncoder.encode("padrao123"));
 
                     newUser.getRoles().add(roleDriver);
 
@@ -234,7 +237,7 @@ public class SynchronizationService {
                 newUser.setEmail(geraEmailPeloNome(driverOracle.getName()));
                 newUser.setPhone("11999999999");
                 newUser.setBirthDate(LocalDate.now());
-                newUser.setPassword("padrao123");
+                newUser.setPassword(passwordEncoder.encode("padrao123"));
 
                 newUser.getRoles().add(roleDriver);
 

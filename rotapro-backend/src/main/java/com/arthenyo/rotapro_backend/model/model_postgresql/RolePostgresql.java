@@ -1,12 +1,13 @@
 package com.arthenyo.rotapro_backend.model.model_postgresql;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Objects;
 
 @Entity
 @Table(name = "tb_role")
-public class RolePostgresql{
+public class RolePostgresql implements GrantedAuthority{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
