@@ -2,6 +2,7 @@ package com.arthenyo.rotapro_backend.services;
 
 import com.arthenyo.rotapro_backend.dto.RoleDTO;
 import com.arthenyo.rotapro_backend.dto.UserDTO;
+import com.arthenyo.rotapro_backend.dto.UserInsertDTO;
 import com.arthenyo.rotapro_backend.model.model_postgresql.RolePostgresql;
 import com.arthenyo.rotapro_backend.model.model_postgresql.UserPostgresql;
 import com.arthenyo.rotapro_backend.projections.UserDetailsProjection;
@@ -22,14 +23,14 @@ public class UserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public UserDTO createUser(UserDTO dto){
+    public UserDTO createUser(UserInsertDTO dto){
         UserPostgresql entity =new UserPostgresql();
         copyDtoToEntity(dto, entity);
         entity = userPostgresqlRepository.save(entity);
         return new UserDTO(entity);
     }
 
-    private void copyDtoToEntity(UserDTO dto, UserPostgresql entity) {
+    private void copyDtoToEntity(UserInsertDTO dto, UserPostgresql entity) {
         entity.setName(dto.getName());
         entity.setEmail(dto.getEmail());
         entity.setBirthDate(dto.getBirthDate());

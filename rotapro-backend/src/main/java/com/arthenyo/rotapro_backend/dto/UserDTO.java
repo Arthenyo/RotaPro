@@ -15,16 +15,17 @@ public class UserDTO {
     private String email;
     private String phone;
     private LocalDate birthDate;
-    private String password;
     private List<RoleDTO> roles = new ArrayList<>();
 
-    public UserDTO(Long id, String name, String email, String phone, LocalDate birthDate, String password) {
+    public UserDTO() {
+    }
+
+    public UserDTO(Long id, String name, String email, String phone, LocalDate birthDate) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.birthDate = birthDate;
-        this.password = password;
     }
 
     public UserDTO(UserPostgresql entity) {
@@ -33,7 +34,6 @@ public class UserDTO {
         email = entity.getEmail();
         phone = entity.getPhone();
         birthDate = entity.getBirthDate();
-        password = entity.getPassword();
         for(RolePostgresql role : entity.getRoles()){
             roles.add(new RoleDTO(role));
         }
@@ -57,10 +57,6 @@ public class UserDTO {
 
     public LocalDate getBirthDate() {
         return birthDate;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public List<RoleDTO> getRoles() {

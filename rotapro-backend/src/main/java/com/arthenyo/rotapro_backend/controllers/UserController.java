@@ -1,6 +1,7 @@
 package com.arthenyo.rotapro_backend.controllers;
 
 import com.arthenyo.rotapro_backend.dto.UserDTO;
+import com.arthenyo.rotapro_backend.dto.UserInsertDTO;
 import com.arthenyo.rotapro_backend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,10 @@ public class UserController {
     private UserService userService;
 
     @PostMapping()
-    public ResponseEntity<UserDTO> insert(@RequestBody UserDTO dto){
-        dto = userService.createUser(dto);
+    public ResponseEntity<UserDTO> insert(@RequestBody UserInsertDTO dto){
+        UserDTO newDTO = userService.createUser(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
-                .buildAndExpand(dto.getId()).toUri();
-        return ResponseEntity.created(uri).body(dto);
+                .buildAndExpand(newDTO.getId()).toUri();
+        return ResponseEntity.created(uri).body(newDTO);
     }
 }
