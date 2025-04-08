@@ -2,6 +2,7 @@ package com.arthenyo.rotapro_backend.services;
 
 import com.arthenyo.rotapro_backend.dto.*;
 import com.arthenyo.rotapro_backend.model.model_postgresql.*;
+import com.arthenyo.rotapro_backend.model.model_postgresql.enums.Availabilities;
 import com.arthenyo.rotapro_backend.model.model_postgresql.enums.StatusRouter;
 import com.arthenyo.rotapro_backend.model.model_postgresql.enums.StopType;
 import com.arthenyo.rotapro_backend.repositories.repository_postgresql.*;
@@ -43,6 +44,8 @@ public class RouteService {
     private HelperPostgresqlRepository helperPostgresqlRepository;
     @Autowired
     private FuelSupplyPostgresqlRepository fuelSupplyRepository;
+    @Autowired
+    private AuthService authService;
 
     @Transactional
     public RouteDTO updateRoute(Long id, RouteDTO dto) {
@@ -59,6 +62,10 @@ public class RouteService {
         RouteStopPostgresql routeStopPostgresql = new RouteStopPostgresql();
         routeStopPostgresql.setRoute(routePostgresqlRepository.findById(requestDTO.getRouteStop().getRouteId())
                .orElseThrow(() -> new ResponseStatusException("Rota ID " + requestDTO.getRouteStop().getRouteId() + " não encontrada.")));
+
+        if (!driverRoute(routeStopPostgresql.getRoute())) {
+            throw new ResponseStatusException("A rota informada não pertence ao usuário logado. A alteração não é permitida.");
+        }
 
         if(routeStopPostgresql.getRoute().getKminicial() == null){
             throw new ResponseStatusException("A rota precisa estar Iniciada");
@@ -102,6 +109,13 @@ public class RouteService {
         RoutePostgresql route = routePostgresqlRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException("Rota ID " + id + " não encontrada."));
 
+        if (!driverRoute(route)) {
+            throw new ResponseStatusException("A rota informada não pertence ao usuário logado. A alteração não é permitida.");
+        }
+
+        DriverPostgresql driver = route.getDriver();
+        VehiclePostgresql vehicle = route.getVehicle();
+
         if (dto.getHelpers() != null) {
             List<HelperPostgresql> helpers = dto.getHelpers().stream()
                     .map(helperReg -> helperPostgresqlRepository.findByName(helperReg)
@@ -111,6 +125,8 @@ public class RouteService {
         }
         route.setKminicial(dto.getKminicial());
         route.setStatus(StatusRouter.EM_ANDAMENTO);
+        driver.setAvailabilities(Availabilities.IN_LOAD);
+        vehicle.setAvailabilities(Availabilities.IN_LOAD);
 
         route = routePostgresqlRepository.save(route);
 
@@ -121,10 +137,19 @@ public class RouteService {
         RoutePostgresql route = routePostgresqlRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException("Rota ID " + id + " não encontrada."));
 
+        if (!driverRoute(route)) {
+            throw new ResponseStatusException("A rota informada não pertence ao usuário logado. A alteração não é permitida.");
+        }
+
+        DriverPostgresql driver = route.getDriver();
+        VehiclePostgresql vehicle = route.getVehicle();
+
         route.setKmfinal(dto.getKmfinal());
         route.setTotalKm(dto.getKmfinal() - route.getKminicial());
         route.setEndDate(LocalDate.now());
         route.setStatus(StatusRouter.CONCLUIDA);
+        driver.setAvailabilities(Availabilities.AVAILABLE);
+        vehicle.setAvailabilities(Availabilities.AVAILABLE);
 
         route = routePostgresqlRepository.save(route);
 
@@ -138,6 +163,22 @@ public class RouteService {
     public Page<RouteMinDTO> getAllRoutes(Pageable pageable) {
         Page<RoutePostgresql> routes = routePostgresqlRepository.findAll(pageable);
         return routes.map(RouteMinDTO::new);
+    }
+    public Page<RouteMinDTO> getAllRoutesUser(Pageable pageable) {
+        Long userId = authService.authenticated().getId();
+        Page<RoutePostgresql> routes = routePostgresqlRepository.findByRouteUser(userId,pageable);
+        if(routes.isEmpty()){
+            throw new ResponseStatusException("Não a rotas para esse usuario");
+        }
+        return routes.map(RouteMinDTO::new);
+    }
+    public List<RouteMinDTO> getAllRoutesUserOpen() {
+        Long userId = authService.authenticated().getId();
+        List<RoutePostgresql> routes = routePostgresqlRepository.findByRouteUserOpen(userId);
+        if(routes.isEmpty()){
+            throw new ResponseStatusException("Não a rotas para esse usuario");
+        }
+        return routes.stream().map(x -> new RouteMinDTO(x)).collect(Collectors.toList());
     }
     public List<RouteMinDTO> getRoutesByStatus(StatusRouter status) {
         List<RoutePostgresql> routes = routePostgresqlRepository.findByStatus(status);
@@ -184,5 +225,8 @@ public class RouteService {
         }
         return null;
     }
-
+    private boolean driverRoute(RoutePostgresql route){
+        UserPostgresql userlogin = authService.authenticated();
+        return Objects.equals(userlogin.getId(), route.getDriver().getId());
+    }
 }

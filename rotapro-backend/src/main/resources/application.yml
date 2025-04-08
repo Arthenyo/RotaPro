@@ -3,6 +3,10 @@ spring:
     name: rotapro-backend
   profiles:
     active: test
+  flyway:
+    enabled: true
+    table: tb_controle_migracoes_frota
+    locations: classpath:db/migration
 
 security:
   client-id: ${CLIENT_ID:myclientid}

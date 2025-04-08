@@ -1,20 +1,11 @@
 spring:
   jpa:
-    properties:
-      jakarta:
-        persistence:
-          schema-generation:
-            create-source: metadata
-            scripts:
-              action: create
-              create-target: ./target/create.sql # Define o local onde o arquivo será gerado
-      hibernate:
-        hbm2ddl:
-          delimiter: ";" # Define o delimitador para os comandos SQL
     hibernate:
-      ddl-auto: create # Garante que o esquema seja recriado a cada inicialização
-      dialect: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: none
     show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 postgresql:
   datasource:

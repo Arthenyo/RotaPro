@@ -52,6 +52,16 @@ public class RouteController {
         Page<RouteMinDTO> routes = routeService.getAllRoutes(pageable);
         return ResponseEntity.ok(routes);
     }
+    @GetMapping("/driver")
+    public ResponseEntity<Page<RouteMinDTO>> getAllRoutesUser(Pageable pageable) {
+        Page<RouteMinDTO> routes = routeService.getAllRoutesUser(pageable);
+        return ResponseEntity.ok(routes);
+    }
+    @GetMapping("/driver/open")
+    public ResponseEntity<List<RouteMinDTO>> getAllRoutesUserOpen() {
+        List<RouteMinDTO> routes = routeService.getAllRoutesUserOpen();
+        return ResponseEntity.ok(routes);
+    }
     @GetMapping("/status")
     public ResponseEntity<List<RouteMinDTO>> getRoutesByStatus(@RequestParam("status") StatusRouter status) {
         List<RouteMinDTO> routes = routeService.getRoutesByStatus(status);
