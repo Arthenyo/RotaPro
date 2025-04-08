@@ -10,6 +10,7 @@ import java.util.List;
 public interface UserPostgresqlRepository extends JpaRepository<UserPostgresql, Long> {
     boolean existsByEmail(String email);
     UserPostgresql findByEmail(String email);
+    List<UserPostgresql> findByNameStartingWith(String name);
     @Query(nativeQuery = true, value = """
     SELECT tb_usuario.email AS username, tb_usuario.password AS password, tb_role.id AS roleId, tb_role.authority AS authority
     FROM tb_usuario
